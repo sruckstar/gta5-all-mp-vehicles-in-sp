@@ -1,0 +1,135 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using GTA;
+using GTA.Native;
+using GTA.Math;
+using System.Drawing;
+using System.Reflection;
+using System.Windows.Forms;
+
+public class Tuners : Script
+{
+    private int spawned = 0;
+    private int x = 0;
+    private float distance = 150.0f;
+    private Blip marker;
+
+    private Vector3[] coords = new Vector3[5];
+    private float[] angle = new float[5];
+    private GTA.Vehicle car;
+    private int all_coords;
+    private VehicleHash[] models = new VehicleHash[19];
+
+    public Tuners()
+    {
+        coords[0] = new Vector3(934.148f, -1812.94f, 29.812f); // 88.712 //streetrace
+        coords[1] = new Vector3(246.847f, -1162.08f, 28.16f); //180.390 street race
+        coords[2] = new Vector3(1136.156f, -773.997f, 56.632f); //269.604 //street
+        coords[3] = new Vector3(1028.898f, -2405.95f, 28.494f); //170.017 //street race
+        coords[4] = new Vector3(-552.673f, 309.154f, 82.191f); //260.340 street
+        all_coords = 4;
+
+        angle[0] = 88.712f;
+        angle[1] = 180.390f;
+        angle[2] = 269.604f;
+        angle[3] = 170.017f;
+        angle[4] = 260.340f;
+
+        models[0] = VehicleHash.KanjoSJ;
+        models[1] = VehicleHash.Postlude;
+        models[2] = VehicleHash.Previon;
+        models[3] = VehicleHash.Cypher;
+        models[4] = VehicleHash.Sultan3;
+        models[5] = VehicleHash.Growler;
+        models[6] = VehicleHash.Vectre;
+        models[7] = VehicleHash.Dominator7;
+        models[8] = VehicleHash.Comet6;
+        models[9] = VehicleHash.Remus;
+        models[10] = VehicleHash.Jester4;
+        models[11] = VehicleHash.Tailgater2;
+        models[12] = VehicleHash.Warrener2;
+        models[13] = VehicleHash.RT3000;
+        models[14] = VehicleHash.ZR350;
+        models[15] = VehicleHash.Dominator8;
+        models[16] = VehicleHash.Euros;
+        models[17] = VehicleHash.Futo2;
+        models[18] = VehicleHash.Calico;
+
+        car = null;
+        spawned = 0;
+        Tick += OnTick;
+    }
+
+    void OnTick(object sender, EventArgs e)
+    {
+        {
+            Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
+            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+
+            for (int i = 0; i <= all_coords; i++)
+            {
+                if (spawned == 0 && Function.Call<bool>(Hash.IS_PLAYER_SWITCH_IN_PROGRESS) == false)
+                {
+                    if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
+                    {
+                        Random rnd = new Random();
+                        var veh_model = new Model(models[rnd.Next(0, 19)]);
+                        veh_model.Request(500);
+                        while (!veh_model.IsLoaded) Script.Wait(100);
+                        car = World.CreateVehicle(veh_model, coords[i], angle[i]);
+                        Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
+                        spawned = 1;
+                        marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
+                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
+                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+                        GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
+                        Function.Call(Hash._0xF9113A30DE5C6670, "STRING");
+                        Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, "Unique vehicle");
+                        Function.Call(Hash._0xBC38B49BCB83BC9B, marker);
+                        veh_model.MarkAsNoLongerNeeded();
+                        x = i;
+                        break;
+                    }
+                }
+            }
+
+            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            if (car != null)
+            {
+                if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
+                {
+                    marker.Remove();
+                    car.MarkAsNoLongerNeeded();
+                    car = null;
+                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                }
+            }
+
+            if (car == null && spawned == 1)
+            {
+                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                while (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) < distance)
+                {
+                    Script.Wait(100);
+                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                }
+                spawned = 0;
+            }
+
+
+            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            {
+                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
+                {
+                    car.Delete();
+                    car = null;
+                    marker.Remove();
+                }
+            }
+        }
+    }
+}
