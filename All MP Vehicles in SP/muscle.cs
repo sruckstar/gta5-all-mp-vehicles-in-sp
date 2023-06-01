@@ -25,13 +25,13 @@ public class Muscle : Script
 
     public Muscle()
     {
-        coords[0] = new Vector3(-604.458f, -1218.29f, 13.507f); //126.630
-        coords[1] = new Vector3(28.385f, -1707.34f, 28.298f); //20.062
-        coords[2] = new Vector3(-329.7f, -700.958f, 31.912f); //90.953
-        coords[3] = new Vector3(238.339f, -35.01f, 68.728f); //339.692
-        coords[4] = new Vector3(393.61f, -649.557f, 27.5f); //89.731
-        coords[5] = new Vector3(124.231f, -1472.5f, 28.142f); //322.085
-        coords[6] = new Vector3(185.595f, -1016.01f, 28.3f); //Muscle 33.320
+        coords[0] = new Vector3(-604.458f, -1218.29f, 13.507f); 
+        coords[1] = new Vector3(28.385f, -1707.34f, 28.298f); 
+        coords[2] = new Vector3(-329.7f, -700.958f, 31.912f); 
+        coords[3] = new Vector3(238.339f, -35.01f, 68.728f);
+        coords[4] = new Vector3(393.61f, -649.557f, 27.5f);
+        coords[5] = new Vector3(124.231f, -1472.5f, 28.142f); 
+        coords[6] = new Vector3(185.595f, -1016.01f, 28.3f); 
         all_coords = 6;
 
         angle[0] = 146.244f;
@@ -124,7 +124,7 @@ public class Muscle : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -148,7 +148,7 @@ public class Muscle : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

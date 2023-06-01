@@ -25,14 +25,14 @@ public class sportclassic : Script
 
     public sportclassic()
     {
-        coords[0] = new Vector3(-1114.1f, 479.205f, 81.161f); //sport  171.220
-        coords[1] = new Vector3(-161.232f, 274.911f, 92.534f); //sport 272.080
-        coords[2] = new Vector3(-504.323f, 424.21f, 96.287f); //sport 313.167
-        coords[3] = new Vector3(-1405.12f, 81.983f, 52.099f); //sport 53.145
-        coords[4] = new Vector3(-1299.92f, -228.464f, 59.654f); //sport 126.968
-        coords[5] = new Vector3(-1334.63f, -1008.97f, 6.867f); //sport 118.474
-        coords[6] = new Vector3(-187.144f, -175.854f, 42.624f); //sport 160.257
-        coords[7] = new Vector3(-1886.25f, 2016.572f, 139.951f); //sport 174.739
+        coords[0] = new Vector3(-1114.1f, 479.205f, 81.161f); 
+        coords[1] = new Vector3(-161.232f, 274.911f, 92.534f);
+        coords[2] = new Vector3(-504.323f, 424.21f, 96.287f); 
+        coords[3] = new Vector3(-1405.12f, 81.983f, 52.099f); 
+        coords[4] = new Vector3(-1299.92f, -228.464f, 59.654f);
+        coords[5] = new Vector3(-1334.63f, -1008.97f, 6.867f);
+        coords[6] = new Vector3(-187.144f, -175.854f, 42.624f); 
+        coords[7] = new Vector3(-1886.25f, 2016.572f, 139.951f); 
         all_coords = 7;
 
         angle[0] = 171.220f;

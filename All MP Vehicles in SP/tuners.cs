@@ -25,11 +25,11 @@ public class Tuners : Script
 
     public Tuners()
     {
-        coords[0] = new Vector3(934.148f, -1812.94f, 29.812f); // 88.712 //streetrace
-        coords[1] = new Vector3(246.847f, -1162.08f, 28.16f); //180.390 street race
-        coords[2] = new Vector3(1136.156f, -773.997f, 56.632f); //269.604 //street
-        coords[3] = new Vector3(1028.898f, -2405.95f, 28.494f); //170.017 //street race
-        coords[4] = new Vector3(-552.673f, 309.154f, 82.191f); //260.340 street
+        coords[0] = new Vector3(934.148f, -1812.94f, 29.812f); 
+        coords[1] = new Vector3(246.847f, -1162.08f, 28.16f); 
+        coords[2] = new Vector3(1136.156f, -773.997f, 56.632f); 
+        coords[3] = new Vector3(1028.898f, -2405.95f, 28.494f); 
+        coords[4] = new Vector3(-552.673f, 309.154f, 82.191f); 
         all_coords = 4;
 
         angle[0] = 88.712f;
@@ -96,7 +96,7 @@ public class Tuners : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -120,7 +120,7 @@ public class Tuners : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

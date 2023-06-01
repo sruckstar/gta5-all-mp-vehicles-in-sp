@@ -25,7 +25,7 @@ public class Cheburek : Script
 
     public Cheburek()
     {
-        coords[0] = new Vector3(1546.591f, 3781.791f, 33.06f); //26.557 //чебурек
+        coords[0] = new Vector3(1546.591f, 3781.791f, 33.06f);
         all_coords = 0;
 
         angle[0] = 26.557f;
@@ -72,7 +72,7 @@ public class Cheburek : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -96,7 +96,7 @@ public class Cheburek : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

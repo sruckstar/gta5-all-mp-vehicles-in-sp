@@ -25,14 +25,14 @@ public class Suvs : Script
 
     public Suvs()
     {
-        coords[0] = new Vector3(-2340.76f, 296.197f, 168.467f); // 294.694
-        coords[1] = new Vector3(629.014f, 196.173f, 96.128f); //73.644
-        coords[2] = new Vector3(1150.161f, -991.569f, 44.528f); //184.693
-        coords[3] = new Vector3(244.916f, -860.606f, 28.5f); //2545.340
-        coords[4] = new Vector3(-340.099f, -876.452f, 30.071f); //342.657
-        coords[5] = new Vector3(387.275f, -215.651f, 55.835f); //342.648
-        coords[6] = new Vector3(-1234.11f, -1646.83f, 3.129f); //303.873
-        coords[7] = new Vector3(-472.038f, 6034.981f, 30.341f); //48.131 //SUVs
+        coords[0] = new Vector3(-2340.76f, 296.197f, 168.467f);
+        coords[1] = new Vector3(629.014f, 196.173f, 96.128f);
+        coords[2] = new Vector3(1150.161f, -991.569f, 44.528f);
+        coords[3] = new Vector3(244.916f, -860.606f, 28.5f); 
+        coords[4] = new Vector3(-340.099f, -876.452f, 30.071f);
+        coords[5] = new Vector3(387.275f, -215.651f, 55.835f); 
+        coords[6] = new Vector3(-1234.11f, -1646.83f, 3.129f); 
+        coords[7] = new Vector3(-472.038f, 6034.981f, 30.341f); 
         all_coords = 7;
 
         angle[0] = 146.244f;
@@ -99,7 +99,7 @@ public class Suvs : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -123,7 +123,7 @@ public class Suvs : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

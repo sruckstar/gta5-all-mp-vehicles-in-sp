@@ -35,11 +35,11 @@ public class Military : Script
         coords[8] = new Vector3(-2027.833f, 3078.663f, 32.810f); 
         coords[9] = new Vector3(-2045.754f, 3095.386f, 32.810f); 
         coords[10] = new Vector3(-2059.501f, 3077.011f, 32.810f);
-        coords[11] = new Vector3(-1892.247f, 3082.933f, 32.810f); //plane 1
-        coords[12] = new Vector3(-1934.867f, 3109.608f, 32.810f); //plane 2
-        coords[13] = new Vector3(-1965.212f, 3101.532f, 32.810f); //heli
-        coords[14] = new Vector3(-1907.528f, 3117.613f, 32.959f); //opressor
-        coords[15] = new Vector3(-1903.383f, 3115.676f, 32.810f); //other
+        coords[11] = new Vector3(-1892.247f, 3082.933f, 32.810f); 
+        coords[12] = new Vector3(-1934.867f, 3109.608f, 32.810f); 
+        coords[13] = new Vector3(-1965.212f, 3101.532f, 32.810f); 
+        coords[14] = new Vector3(-1907.528f, 3117.613f, 32.959f); 
+        coords[15] = new Vector3(-1903.383f, 3115.676f, 32.810f); 
 
         angle[0] = 327.087f;
         angle[1] = 240.052f;
@@ -71,7 +71,7 @@ public class Military : Script
         models[9] = VehicleHash.APC;
         models[10] = VehicleHash.TrailerSmall2;
 
-        //planes 11 - 27
+        
         models[11] = VehicleHash.Alkonost;
         models[12] = VehicleHash.Strikeforce;
         models[13] = VehicleHash.Avenger;
@@ -89,18 +89,18 @@ public class Military : Script
         models[25] = VehicleHash.AlphaZ1;
         models[26] = VehicleHash.Hydra;
 
-        //heli 27 - 32
+        
         models[27] = VehicleHash.Annihilator2;
         models[28] = VehicleHash.Akula;
         models[29] = VehicleHash.Hunter;
         models[30] = VehicleHash.Valkyrie;
         models[31] = VehicleHash.Savage;
 
-        //opressors 32 - 34
+        
         models[32] = VehicleHash.Oppressor;
         models[33] = VehicleHash.Oppressor2;
 
-        //other military 34 - 38
+        
         models[34] = VehicleHash.Squaddie;
         models[35] = VehicleHash.Manchez2;
         models[36] = VehicleHash.Winky;

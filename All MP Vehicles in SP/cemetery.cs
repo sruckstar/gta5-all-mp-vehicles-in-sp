@@ -25,7 +25,7 @@ public class cemetery : Script
 
     public cemetery()
     {
-        coords[0] = new Vector3(-1640.42f, -202.879f, 54.146f); // 338.279 кладбище
+        coords[0] = new Vector3(-1640.42f, -202.879f, 54.146f); 
         all_coords = 0;
 
         angle[0] = 338.279f;
@@ -73,7 +73,7 @@ public class cemetery : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -97,7 +97,7 @@ public class cemetery : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

@@ -25,10 +25,10 @@ public class Offroad : Script
 
     public Offroad()
     {
-        coords[0] = new Vector3(386.663f, 2640.138f, 43.493f); //213.528 //оффроад
-        coords[1] = new Vector3(1991.707f, 3078.063f, 46.016f); //56.759 //оффроад? джип и т.п.
-        coords[2] = new Vector3(1977.207f, 3837.1f, 30.997f); //204.108 //оффроад
-        coords[3] = new Vector3(1350.173f, 3601.249f, 33.899f); //204.102 // оффроад
+        coords[0] = new Vector3(386.663f, 2640.138f, 43.493f);
+        coords[1] = new Vector3(1991.707f, 3078.063f, 46.016f);
+        coords[2] = new Vector3(1977.207f, 3837.1f, 30.997f); 
+        coords[3] = new Vector3(1350.173f, 3601.249f, 33.899f); 
         all_coords = 3;
 
         angle[0] = 126.963f;
@@ -106,7 +106,7 @@ public class Offroad : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -130,7 +130,7 @@ public class Offroad : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

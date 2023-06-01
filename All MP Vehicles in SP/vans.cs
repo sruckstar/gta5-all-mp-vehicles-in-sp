@@ -25,19 +25,19 @@ public class vans : Script
 
     public vans()
     {
-        coords[0] = new Vector3(140.945f, 6606.513f, 30.845f); //фургон 0.239
-        coords[1] = new Vector3(1362.672f, 1178.352f, 111.609f); //фургон 359.306
-        coords[2] = new Vector3(2593.022f, 364.349f, 107.457f); //174.745 фургон
-        coords[3] = new Vector3(2002.724f, 3769.429f, 31.181f); //298.783 //фургон
-        coords[4] = new Vector3(-771.927f, 5566.46f, 32.486f); //271.230 //фургон
-        coords[5] = new Vector3(1697.817f, 6414.365f, 31.73f); //247.870 фургон 
-        coords[6] = new Vector3(1700.445f, 4937.267f, 41.078f); //147.276 //фургон
-        coords[7] = new Vector3(-1804.77f, 804.137f, 137.514f); //223.747 //фургон
-        coords[8] = new Vector3(756.539f, 2525.957f, 72.161f); //270.240 //фургон
-        coords[9] = new Vector3(1205.454f, 2658.357f, 36.824f); //223.627 //фургон
-        coords[10] = new Vector3(-165.839f, 6454.25f, 30.495f); //фургон 225.116
-        coords[11] = new Vector3(-2221.14f, 4232.757f, 46.132f); //225.108 фургон
-        coords[12] = new Vector3(-2555.51f, 2322.827f, 32.06f); //273.837 //фургон
+        coords[0] = new Vector3(140.945f, 6606.513f, 30.845f); 
+        coords[1] = new Vector3(1362.672f, 1178.352f, 111.609f); 
+        coords[2] = new Vector3(2593.022f, 364.349f, 107.457f); 
+        coords[3] = new Vector3(2002.724f, 3769.429f, 31.181f); 
+        coords[4] = new Vector3(-771.927f, 5566.46f, 32.486f); 
+        coords[5] = new Vector3(1697.817f, 6414.365f, 31.73f); 
+        coords[6] = new Vector3(1700.445f, 4937.267f, 41.078f); 
+        coords[7] = new Vector3(-1804.77f, 804.137f, 137.514f); 
+        coords[8] = new Vector3(756.539f, 2525.957f, 72.161f); 
+        coords[9] = new Vector3(1205.454f, 2658.357f, 36.824f); 
+        coords[10] = new Vector3(-165.839f, 6454.25f, 30.495f); 
+        coords[11] = new Vector3(-2221.14f, 4232.757f, 46.132f); 
+        coords[12] = new Vector3(-2555.51f, 2322.827f, 32.06f); 
         all_coords = 12;
 
         angle[0] = 0.239f;
@@ -100,7 +100,7 @@ public class vans : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+           
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -124,7 +124,7 @@ public class vans : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

@@ -25,11 +25,11 @@ public class ghetto : Script
 
     public ghetto()
     {
-        coords[0] = new Vector3(-229.587f, -1483.44f, 30.352f); // гетто 146.244
-        coords[1] = new Vector3(-22.296f, -1851.58f, 24.108f); //141.262 //ghetto
-        coords[2] = new Vector3(321.798f, -1948.14f, 23.627f); //гетто 47.597
-        coords[3] = new Vector3(455.602f, -1695.26f, 28.289f); //гетто 138.808
-        coords[4] = new Vector3(1228.548f, -1605.65f, 50.736f); //33.185 ghetto
+        coords[0] = new Vector3(-229.587f, -1483.44f, 30.352f); 
+        coords[1] = new Vector3(-22.296f, -1851.58f, 24.108f); 
+        coords[2] = new Vector3(321.798f, -1948.14f, 23.627f); 
+        coords[3] = new Vector3(455.602f, -1695.26f, 28.289f); 
+        coords[4] = new Vector3(1228.548f, -1605.65f, 50.736f); 
         all_coords = 4;
 
         angle[0] = 146.244f;
@@ -88,7 +88,7 @@ public class ghetto : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -112,7 +112,7 @@ public class ghetto : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

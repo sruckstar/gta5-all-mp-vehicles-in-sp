@@ -25,7 +25,7 @@ public class openwheel : Script
 
     public openwheel()
     {
-        coords[0] = new Vector3(1122.086f, 267.125f, 79.856f); //294.684 //болид
+        coords[0] = new Vector3(1122.086f, 267.125f, 79.856f); 
         all_coords = 0;
 
         angle[0] = 294.684f;
@@ -74,7 +74,7 @@ public class openwheel : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -98,7 +98,7 @@ public class openwheel : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

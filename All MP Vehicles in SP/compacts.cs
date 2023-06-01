@@ -25,12 +25,12 @@ public class compacts : Script
 
     public compacts()
     {
-        coords[0] = new Vector3(-1409.08f, -590.823f, 29.317f); // standart 126.963
-        coords[1] = new Vector3(-817.325f, -1201.59f, 5.935f); //standart 318.133
-        coords[2] = new Vector3(-489.189f, -596.899f, 30.174f); // об 355.228
-        coords[3] = new Vector3(871.548f, -75.386f, 77.764f); // 148.566
-        coords[4] = new Vector3(110.261f, -714.605f, 32.133f); //341.667
-        coords[5] = new Vector3(-220.102f, -590.273f, 33.264f); //341.667
+        coords[0] = new Vector3(-1409.08f, -590.823f, 29.317f); 
+        coords[1] = new Vector3(-817.325f, -1201.59f, 5.935f); 
+        coords[2] = new Vector3(-489.189f, -596.899f, 30.174f); 
+        coords[3] = new Vector3(871.548f, -75.386f, 77.764f); 
+        coords[4] = new Vector3(110.261f, -714.605f, 32.133f); 
+        coords[5] = new Vector3(-220.102f, -590.273f, 33.264f);
         all_coords = 5;
 
         angle[0] = 126.963f;
@@ -87,7 +87,7 @@ public class compacts : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+           
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -111,7 +111,7 @@ public class compacts : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

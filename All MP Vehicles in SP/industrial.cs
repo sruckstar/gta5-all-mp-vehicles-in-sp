@@ -25,10 +25,10 @@ public class industrial : Script
 
     public industrial()
     {
-        coords[0] = new Vector3(1566.097f, -1683.17f, 87.205f); //раб 14.900
-        coords[1] = new Vector3(2673.478f, 1678.569f, 23.488f); //270.297 раб
-        coords[2] = new Vector3(839.097f, 2202.196f, 50.46f); //245.553 //раб
-        coords[3] = new Vector3(2717.772f, 1391.725f, 23.535f); //раб //26.547
+        coords[0] = new Vector3(1566.097f, -1683.17f, 87.205f); 
+        coords[1] = new Vector3(2673.478f, 1678.569f, 23.488f); 
+        coords[2] = new Vector3(839.097f, 2202.196f, 50.46f);
+        coords[3] = new Vector3(2717.772f, 1391.725f, 23.535f); 
         all_coords = 3;
 
         angle[0] = 14.900f;
@@ -82,7 +82,7 @@ public class industrial : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
+            
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -106,7 +106,7 @@ public class industrial : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null) 
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
