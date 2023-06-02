@@ -114,7 +114,7 @@ public class Military : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
             if (spawned == 0 && GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_ENTITY_IN_ZONE, Game.Player.Character, "ARMYB"))
             {
                 for (int i = 0; i <= 10; i++)

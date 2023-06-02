@@ -95,7 +95,7 @@ public class Muscle : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
 
             for (int i = 0; i <= all_coords; i++)
             {
@@ -132,17 +132,17 @@ public class Muscle : Script
                     marker.Remove();
                     car.MarkAsNoLongerNeeded();
                     car = null;
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
             }
 
             if (car == null && spawned == 1)
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 while (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) < distance)
                 {
                     Script.Wait(100);
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
                 spawned = 0;
             }
@@ -150,7 +150,7 @@ public class Muscle : Script
 
             if (spawned == 1 && car != null) 
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
                     car.Delete();
