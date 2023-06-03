@@ -78,7 +78,7 @@ public class cemetery : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Remove();
+                    marker.Delete();
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
@@ -104,7 +104,7 @@ public class cemetery : Script
                 {
                     car.Delete();
                     car = null;
-                    marker.Remove();
+                    marker.Delete();
                 }
             }
         }

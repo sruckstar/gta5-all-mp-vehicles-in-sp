@@ -54,8 +54,8 @@ public class HumanLabs : Script
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
-                        car.CustomPrimaryColor = Color.Black;
-                        car.CustomSecondaryColor = Color.Black;
+                        car.Mods.CustomPrimaryColor = Color.Black;
+                        car.Mods.CustomSecondaryColor = Color.Black;
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, car, 0);
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD, car, 48, 5, false);
                         spawned = 1;
@@ -63,9 +63,9 @@ public class HumanLabs : Script
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
                         GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash._0xF9113A30DE5C6670, "STRING");
-                        Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, "Unique vehicle");
-                        Function.Call(Hash._0xBC38B49BCB83BC9B, marker);
+                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SET_BLIP_NAME, "STRING");
+                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "Unique vehicle");
+                        Function.Call(Hash.END_TEXT_COMMAND_SET_BLIP_NAME, marker);
                         x = i;
                         veh_model.MarkAsNoLongerNeeded();
                         break;
@@ -78,7 +78,7 @@ public class HumanLabs : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Remove();
+                    marker.Delete();
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
@@ -99,12 +99,12 @@ public class HumanLabs : Script
 
             if (spawned == 1 && car != null) 
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
                     car.Delete();
                     car = null;
-                    marker.Remove();
+                    marker.Delete();
                 }
             }
         }

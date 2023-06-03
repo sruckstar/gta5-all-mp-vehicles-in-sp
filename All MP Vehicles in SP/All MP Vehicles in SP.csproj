@@ -83,4 +83,7 @@
     <Compile Include="weaponboats.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Rockstar Games\Grand Theft Auto V\scripts"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

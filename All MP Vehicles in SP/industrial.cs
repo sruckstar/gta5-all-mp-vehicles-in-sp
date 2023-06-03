@@ -53,7 +53,7 @@ public class industrial : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
 
             for (int i = 0; i <= all_coords; i++)
             {
@@ -72,9 +72,9 @@ public class industrial : Script
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
                         GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash._0xF9113A30DE5C6670, "STRING");
-                        Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, "Unique vehicle");
-                        Function.Call(Hash._0xBC38B49BCB83BC9B, marker);
+                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SET_BLIP_NAME, "STRING");
+                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "Unique vehicle");
+                        Function.Call(Hash.END_TEXT_COMMAND_SET_BLIP_NAME, marker);
                         veh_model.MarkAsNoLongerNeeded();
                         x = i;
                         break;
@@ -87,7 +87,7 @@ public class industrial : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Remove();
+                    marker.Delete();
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
@@ -113,7 +113,7 @@ public class industrial : Script
                 {
                     car.Delete();
                     car = null;
-                    marker.Remove();
+                    marker.Delete();
                 }
             }
         }

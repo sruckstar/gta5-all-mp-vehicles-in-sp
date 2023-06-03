@@ -68,7 +68,7 @@ public class Military : Script
         models[6] = VehicleHash.Barrage;
         models[7] = VehicleHash.TrailerLarge;
         models[8] = VehicleHash.HalfTrack;
-        models[9] = VehicleHash.APC;
+        models[9] = VehicleHash.Apc;
         models[10] = VehicleHash.TrailerSmall2;
 
         
