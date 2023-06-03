@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 public class HumanLabs : Script
 {
+    ScriptSettings config;
+    private int doors_config = 0;
+    private int blip_config = 0;
     private int spawned = 0;
     private int x = 0;
     private float distance = 150.0f;
@@ -25,6 +28,10 @@ public class HumanLabs : Script
 
     public HumanLabs()
     {
+        config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        doors_config = config.GetValue<int>("MAIN", "doors", 1);
+        blip_config = config.GetValue<int>("MAIN", "blips", 1);
+
         coords[0] = new Vector3(3511.653f, 3783.877f, 28.925f); 
         all_coords = 0;
 
@@ -59,13 +66,22 @@ public class HumanLabs : Script
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, car, 0);
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD, car, 48, 5, false);
                         spawned = 1;
-                        marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
-                        GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SET_BLIP_NAME, "STRING");
-                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "Unique vehicle");
-                        Function.Call(Hash.END_TEXT_COMMAND_SET_BLIP_NAME, marker);
+
+                        if (blip_config == 1)
+                        {
+                            marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+                            GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
+                            marker.Name = "Unique vehicle";
+                        }
+
+                        if (doors_config == 1)
+                        {
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
+
+                        }
+
                         x = i;
                         veh_model.MarkAsNoLongerNeeded();
                         break;
@@ -78,7 +94,16 @@ public class HumanLabs : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Delete();
+                    if (doors_config == 1)
+                    {
+                        GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
+                        GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
+                    }
+
+                    if (marker.Exists())
+                    {
+                        marker.Delete();
+                    }
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));

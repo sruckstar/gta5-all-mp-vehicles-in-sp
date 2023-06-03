@@ -33,20 +33,27 @@ public class debug : Script
 
     void onkeydown(object sender, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Z)
+        if (e.KeyCode == Keys.Z && compact_spawned == 0)
         {
-            var veh_model = new Model(VehicleHash.Cheburek);
-            veh_model.Request(500);
-            while (!veh_model.IsLoaded) Script.Wait(100);
-
-            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 5, 0)); // берем координаты игрока и прибавляем смещение 5 игровых метров от него
-            var heading = Game.Player.Character.Heading - 90;
-            var car = World.CreateVehicle(veh_model, position, heading);
-            Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
-            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
-            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
-            GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
-            veh_model.MarkAsNoLongerNeeded();
+            int id = 686;
+            for (int i = 0; i <= all_coords; i++)
+            {
+                marker[i] = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_COORD, coords[i].X, coords[i].Y, coords[i].Z);
+                GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker[i], id);
+                id++;
+            }
+            compact_spawned = 1;
+        }
+        else
+        {
+            if (e.KeyCode == Keys.Z && compact_spawned == 1)
+            {
+                for (int i = 0; i <= all_coords; i++)
+                {
+                    marker[i].Remove();
+                }
+                compact_spawned = 0;
+            }
         }
     }
 }

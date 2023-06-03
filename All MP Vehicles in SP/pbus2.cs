@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 public class PBus2 : Script
 {
+    ScriptSettings config;
+    private int doors_config = 0;
+    private int blip_config = 0;
     private int spawned = 0;
     private int x = 0;
     private float distance = 150.0f;
@@ -25,6 +28,10 @@ public class PBus2 : Script
 
     public PBus2()
     {
+        config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        doors_config = config.GetValue<int>("MAIN", "doors", 1);
+        blip_config = config.GetValue<int>("MAIN", "blips", 1);
+
         coords[0] = new Vector3(-1513.889f, -1253.183f, 2.433f);
         all_coords = 0;
 
@@ -55,13 +62,16 @@ public class PBus2 : Script
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
                         spawned = 1;
-                        marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
-                        GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SET_BLIP_NAME, "STRING");
-                        Function.Call(Hash.BEGIN_TEXT_COMMAND_SCALEFORM_STRING, "Unique vehicle");
-                        Function.Call(Hash.END_TEXT_COMMAND_SET_BLIP_NAME, marker);
+
+                        if (blip_config == 1)
+                        {
+                            marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+                            GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
+                            marker.Name = "Unique vehicle";
+                        }
+
                         veh_model.MarkAsNoLongerNeeded();
                         x = i;
                         break;
@@ -74,7 +84,10 @@ public class PBus2 : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Delete();
+                    if (marker.Exists())
+                    {
+                        marker.Delete();
+                    }
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
