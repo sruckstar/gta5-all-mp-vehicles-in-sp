@@ -105,7 +105,7 @@ public class Arena : Script
                         GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
                     }
 
-                    if (marker.Exists())
+                    if (blip_config == 1)
                     {
                         marker.Delete();
                     }
@@ -133,9 +133,12 @@ public class Arena : Script
                 position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.Delete();
                     car = null;
-                    marker.Delete();
                 }
             }
         }

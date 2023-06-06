@@ -86,7 +86,7 @@ public class Boats : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    if (marker.Exists())
+                    if (blip_config == 1)
                     {
                         marker.Delete();
                     }
@@ -113,9 +113,12 @@ public class Boats : Script
                 position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.Delete();
                     car = null;
-                    marker.Delete();
                 }
             }
         }
