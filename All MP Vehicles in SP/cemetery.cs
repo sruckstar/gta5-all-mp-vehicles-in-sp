@@ -24,7 +24,7 @@ public class cemetery : Script
     private float[] angle = new float[1];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[4];
+    private VehicleHash[] models = new VehicleHash[5];
 
     public cemetery()
     {
@@ -41,6 +41,7 @@ public class cemetery : Script
         models[1] = VehicleHash.BType2;
         models[2] = VehicleHash.Sanctus;
         models[3] = VehicleHash.Lurcher;
+        models[4] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "brigham");
 
         car = null;
         spawned = 0;
@@ -60,11 +61,14 @@ public class cemetery : Script
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
                         Random rnd = new Random();
-                        var veh_model = new Model(models[rnd.Next(0, 4)]);
+                        var veh_model = new Model(models[rnd.Next(0, 5)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
+
+
+
                         spawned = 1;
 
                         if (blip_config == 1)
