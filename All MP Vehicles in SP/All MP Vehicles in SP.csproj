@@ -55,6 +55,7 @@
     <Compile Include="cinema.cs" />
     <Compile Include="compacts.cs" />
     <Compile Include="coupes.cs" />
+    <Compile Include="cycles.cs" />
     <Compile Include="ghetto.cs" />
     <Compile Include="helicopters.cs" />
     <Compile Include="humanlabscs.cs" />
@@ -83,4 +84,7 @@
     <Compile Include="weaponboats.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY "$(TargetPath)" "D:\Games\Rockstar Games\Grand Theft Auto V\scripts"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

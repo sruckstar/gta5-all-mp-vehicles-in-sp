@@ -21,7 +21,7 @@ public class Offroad : Script
     private float[] angle = new float[4];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[31];
+    private VehicleHash[] models = new VehicleHash[34];
 
     public Offroad()
     {
@@ -67,6 +67,9 @@ public class Offroad : Script
         models[28] = VehicleHash.Technical;
         models[29] = VehicleHash.Insurgent;
         models[30] = VehicleHash.Guardian;
+        models[31] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "l35");
+        models[32] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "ratel");
+        models[33] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "monstrociti");
 
         car = null;
         spawned = 0;

@@ -10,83 +10,36 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-public class Muscle : Script
+public class Cycles : Script
 {
     private int spawned = 0;
     private int x = 0;
     private float distance = 150.0f;
     private Blip marker;
 
-    private Vector3[] coords = new Vector3[7];
-    private float[] angle = new float[7];
+    private Vector3[] coords = new Vector3[5];
+    private float[] angle = new float[5];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[46];
+    private VehicleHash[] models = new VehicleHash[2];
 
-    public Muscle()
+    public Cycles()
     {
-        coords[0] = new Vector3(-604.458f, -1218.29f, 13.507f); 
-        coords[1] = new Vector3(28.385f, -1707.34f, 28.298f); 
-        coords[2] = new Vector3(-329.7f, -700.958f, 31.912f); 
-        coords[3] = new Vector3(238.339f, -35.01f, 68.728f);
-        coords[4] = new Vector3(393.61f, -649.557f, 27.5f);
-        coords[5] = new Vector3(124.231f, -1472.5f, 28.142f); 
-        coords[6] = new Vector3(185.595f, -1016.01f, 28.3f); 
-        all_coords = 6;
+        coords[0] = new Vector3(-1374.766f, -1399.443f, 6.142528f);
+        coords[1] = new Vector3(-941.4034f, -792.0335f, 15.95103f);
+        coords[2] = new Vector3(274.6519f, -194.8017f, 61.57079f);
+        coords[3] = new Vector3(698.6535f, -1197.893f, 24.39086f);
+        coords[4] = new Vector3(840.2529f, -257.3479f, 65.66613f);
+        all_coords = 4;
 
-        angle[0] = 146.244f;
-        angle[1] = 141.262f;
-        angle[2] = 47.597f;
-        angle[3] = 138.808f;
-        angle[4] = 33.185f;
-        angle[4] = 33.185f;
+        angle[0] = 352.5828f;
+        angle[1] = 1.6991f;
+        angle[2] = 255.056f;
+        angle[3] = 270.8829f;
+        angle[4] = 99.87038f;
 
-        models[0] = VehicleHash.Tahoma;
-        models[1] = VehicleHash.Tulip2;
-        models[2] = VehicleHash.Weevil2;
-        models[3] = VehicleHash.Vigero2;
-        models[4] = VehicleHash.Ruiner4;
-        models[5] = VehicleHash.Buffalo4;
-        models[6] = VehicleHash.Dominator7;
-        models[7] = VehicleHash.Dominator8;
-        models[8] = VehicleHash.Gauntlet5;
-        models[9] = VehicleHash.Manana2;
-        models[10] = VehicleHash.Dukes3;
-        models[11] = VehicleHash.Yosemite2;
-        models[12] = VehicleHash.Peyote2;
-        models[13] = VehicleHash.Gauntlet4;
-        models[14] = VehicleHash.Gauntlet3;
-        models[15] = VehicleHash.Vamos;
-        models[16] = VehicleHash.Deviant;
-        models[17] = VehicleHash.Tulip;
-        models[18] = VehicleHash.Clique;
-        models[19] = VehicleHash.Imperator;
-        models[20] = VehicleHash.Impaler;
-        models[21] = VehicleHash.Dominator3;
-        models[22] = VehicleHash.Ellie;
-        models[23] = VehicleHash.Hustler;
-        models[24] = VehicleHash.Hermes;
-        models[25] = VehicleHash.Yosemite;
-        models[26] = VehicleHash.Tampa3;
-        models[27] = VehicleHash.Ruiner2;
-        models[28] = VehicleHash.SabreGT2;
-        models[29] = VehicleHash.Virgo2;
-        models[30] = VehicleHash.Virgo3;
-        models[31] = VehicleHash.Faction3;
-        models[32] = VehicleHash.Tampa;
-        models[33] = VehicleHash.Nightshade;
-        models[34] = VehicleHash.Moonbeam2;
-        models[35] = VehicleHash.Moonbeam;
-        models[36] = VehicleHash.Faction2;
-        models[37] = VehicleHash.Faction;
-        models[38] = VehicleHash.Chino2;
-        models[39] = VehicleHash.Buccaneer2;
-        models[40] = VehicleHash.Coquette3;
-        models[41] = VehicleHash.Chino;
-        models[42] = VehicleHash.Vigero;
-        models[43] = VehicleHash.SlamVan2;
-        models[44] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "clique2");
-        models[45] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "buffalo5");
+        models[0] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "inductor2");
+        models[1] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "inductor2");
 
         car = null;
         spawned = 0;
@@ -106,7 +59,7 @@ public class Muscle : Script
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
                         Random rnd = new Random();
-                        var veh_model = new Model(models[rnd.Next(0, 46)]);
+                        var veh_model = new Model(models[rnd.Next(0, 2)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
@@ -126,7 +79,7 @@ public class Muscle : Script
                 }
             }
 
-            
+
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
@@ -150,7 +103,7 @@ public class Muscle : Script
             }
 
 
-            if (spawned == 1 && car != null) 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
