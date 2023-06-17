@@ -54,8 +54,7 @@ public class cemetery : Script
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
                         Random rnd = new Random();
-                        //var veh_model = new Model(models[rnd.Next(0, 5)]);
-                        var veh_model = new Model(models[4]);
+                        var veh_model = new Model(models[rnd.Next(0, 5)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
