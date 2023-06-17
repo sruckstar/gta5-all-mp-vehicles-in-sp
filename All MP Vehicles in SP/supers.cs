@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 public class supers : Script
 {
+    ScriptSettings config;
+    private int doors_config = 0;
+    private int blip_config = 0;
     private int spawned = 0;
     private int x = 0;
     private float distance = 100.0f;
@@ -24,6 +27,10 @@ public class supers : Script
 
     public supers()
     {
+        config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        doors_config = config.GetValue<int>("MAIN", "doors", 1);
+        blip_config = config.GetValue<int>("MAIN", "blips", 1);
+
         coords[0] = new Vector3(-1297.2f, 252.495f, 61.813f); 
         coords[1] = new Vector3(-345.267f, 662.299f, 168.587f); 
         coords[2] = new Vector3(-72.605f, 902.579f, 234.631f); 
@@ -92,7 +99,7 @@ public class supers : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
 
             for (int i = 0; i <= 6; i++)
             {
@@ -107,13 +114,22 @@ public class supers : Script
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
                         spawned = 1;
-                        marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
-                        GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash._0xF9113A30DE5C6670, "STRING");
-                        Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, "Unique vehicle");
-                        Function.Call(Hash._0xBC38B49BCB83BC9B, marker);
+
+                        if (blip_config == 1)
+                        {
+                            marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+                            GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
+                            marker.Name = "Unique vehicle";
+                        }
+
+                        if (doors_config == 1)
+                        {
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
+
+                        }
+
                         veh_model.MarkAsNoLongerNeeded();
                         x = i;
                         break;
@@ -126,20 +142,29 @@ public class supers : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Remove();
+                    if (doors_config == 1)
+                    {
+                        GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
+                        GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
+                    }
+
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.MarkAsNoLongerNeeded();
                     car = null;
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
             }
 
             if (car == null && spawned == 1)
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 while (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) < distance)
                 {
                     Script.Wait(100);
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
                 spawned = 0;
             }
@@ -147,12 +172,15 @@ public class supers : Script
 
             if (spawned == 1 && car != null) 
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.Delete();
                     car = null;
-                    marker.Remove();
                 }
             }
         }

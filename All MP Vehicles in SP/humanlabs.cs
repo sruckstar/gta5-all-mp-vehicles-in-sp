@@ -12,6 +12,9 @@ using System.Windows.Forms;
 
 public class HumanLabs : Script
 {
+    ScriptSettings config;
+    private int doors_config = 0;
+    private int blip_config = 0;
     private int spawned = 0;
     private int x = 0;
     private float distance = 150.0f;
@@ -25,6 +28,10 @@ public class HumanLabs : Script
 
     public HumanLabs()
     {
+        config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        doors_config = config.GetValue<int>("MAIN", "doors", 1);
+        blip_config = config.GetValue<int>("MAIN", "blips", 1);
+
         coords[0] = new Vector3(3511.653f, 3783.877f, 28.925f); 
         all_coords = 0;
 
@@ -41,7 +48,7 @@ public class HumanLabs : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
 
             for (int i = 0; i <= all_coords; i++)
             {
@@ -54,18 +61,27 @@ public class HumanLabs : Script
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
-                        car.CustomPrimaryColor = Color.Black;
-                        car.CustomSecondaryColor = Color.Black;
+                        car.Mods.CustomPrimaryColor = Color.Black;
+                        car.Mods.CustomSecondaryColor = Color.Black;
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, car, 0);
                         GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD, car, 48, 5, false);
                         spawned = 1;
-                        marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
-                        GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-                        Function.Call(Hash._0xF9113A30DE5C6670, "STRING");
-                        Function.Call(Hash._ADD_TEXT_COMPONENT_STRING, "Unique vehicle");
-                        Function.Call(Hash._0xBC38B49BCB83BC9B, marker);
+
+                        if (blip_config == 1)
+                        {
+                            marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+                            GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
+                            marker.Name = "Unique vehicle";
+                        }
+
+                        if (doors_config == 1)
+                        {
+                            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
+
+                        }
+
                         x = i;
                         veh_model.MarkAsNoLongerNeeded();
                         break;
@@ -78,20 +94,29 @@ public class HumanLabs : Script
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    marker.Remove();
+                    if (doors_config == 1)
+                    {
+                        GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
+                        GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
+                    }
+
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.MarkAsNoLongerNeeded();
                     car = null;
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
             }
 
             if (car == null && spawned == 1)
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 while (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) < distance)
                 {
                     Script.Wait(100);
-                    position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                    position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 }
                 spawned = 0;
             }
@@ -99,12 +124,15 @@ public class HumanLabs : Script
 
             if (spawned == 1 && car != null) 
             {
-                position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+                position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
+                    if (blip_config == 1)
+                    {
+                        marker.Delete();
+                    }
                     car.Delete();
                     car = null;
-                    marker.Remove();
                 }
             }
         }

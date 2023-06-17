@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptHookVDotNet2">
-      <HintPath>D:\Games\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet2.dll</HintPath>
+    <Reference Include="ScriptHookVDotNet3">
+      <HintPath>D:\Games\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet3.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,7 +58,7 @@
     <Compile Include="cycles.cs" />
     <Compile Include="ghetto.cs" />
     <Compile Include="helicopters.cs" />
-    <Compile Include="humanlabscs.cs" />
+    <Compile Include="humanlabs.cs" />
     <Compile Include="industrial.cs" />
     <Compile Include="karting.cs" />
     <Compile Include="kosatka.cs" />

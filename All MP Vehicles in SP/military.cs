@@ -73,7 +73,7 @@ public class Military : Script
         models[6] = VehicleHash.Barrage;
         models[7] = VehicleHash.TrailerLarge;
         models[8] = VehicleHash.HalfTrack;
-        models[9] = VehicleHash.APC;
+        models[9] = VehicleHash.Apc;
         models[10] = VehicleHash.TrailerSmall2;
 
         
@@ -122,7 +122,7 @@ public class Military : Script
     {
         {
             Vector3 fix_coords = new Vector3(0.0f, 0.0f, 0.0f);
-            var position = Game.Player.Character.GetOffsetInWorldCoords(new Vector3(0, 0, 0));
+            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
             if (spawned == 0 && GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_ENTITY_IN_ZONE, Game.Player.Character, "ARMYB"))
             {
                 for (int i = 0; i <= 10; i++)
