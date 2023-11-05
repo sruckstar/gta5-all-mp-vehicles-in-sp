@@ -97,6 +97,7 @@ public class vans : Script
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
                         spawned = 1;
 
+
                         if (blip_config == 1)
                         {
                             marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
@@ -117,9 +118,9 @@ public class vans : Script
                             rnd = new Random();
                             int num;
                             int modindex;
-                            for (int a = 0; i <= 3; i++)
+                            for (int a = 0; a <= 3; a++)
                             {
-                                mode_type[i] = rnd.Next(0, 17);
+                                mode_type[a] = rnd.Next(0, 17);
                                 num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
                                 if (num != -1)
                                 {

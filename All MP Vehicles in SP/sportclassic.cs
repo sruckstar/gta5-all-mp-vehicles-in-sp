@@ -183,9 +183,9 @@ public class sportclassic : Script
                             rnd = new Random();
                             int num;
                             int modindex;
-                            for (int a = 0; i <= 3; i++)
+                            for (int a = 0; a <= 3; a++)
                             {
-                                mode_type[i] = rnd.Next(0, 17);
+                                mode_type[a] = rnd.Next(0, 17);
                                 num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
                                 if (num != -1)
                                 {

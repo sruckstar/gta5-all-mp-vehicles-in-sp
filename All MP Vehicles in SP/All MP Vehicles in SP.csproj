@@ -55,7 +55,6 @@
     <Compile Include="cinema.cs" />
     <Compile Include="compacts.cs" />
     <Compile Include="coupes.cs" />
-    <Compile Include="debug.cs" />
     <Compile Include="ghetto.cs" />
     <Compile Include="helicopters.cs" />
     <Compile Include="humanlabs.cs" />
