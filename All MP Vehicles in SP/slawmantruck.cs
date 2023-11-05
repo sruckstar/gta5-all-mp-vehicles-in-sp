@@ -15,6 +15,8 @@ public class SlawmanTruck : Script
     ScriptSettings config;
     private int doors_config = 0;
     private int blip_config = 0;
+    private int tuning_flag = 0;
+    private int[] mode_type = new int[5];
     private int spawned = 0;
     private int x = 0;
     private float distance = 150.0f;
@@ -31,6 +33,7 @@ public class SlawmanTruck : Script
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
+        tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
 
         coords[0] = new Vector3(452.709f, -1020.140f, 28.379f); 
         all_coords = 0;
@@ -76,6 +79,54 @@ public class SlawmanTruck : Script
                         {
                             GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
 
+                        }
+
+                        if (tuning_flag == 1)
+                        {
+                            Random rnd = new Random();
+                            int num;
+                            int modindex;
+                            for (int a = 0; i <= 3; i++)
+                            {
+                                mode_type[i] = rnd.Next(0, 17);
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
+                                if (num != -1)
+                                {
+                                    modindex = rnd.Next(0, num + 1);
+                                    Function.Call(Hash.SET_VEHICLE_MOD, car, mode_type[a], modindex, true);
+                                }
+                            }
+                            if (Function.Call<bool>(Hash.IS_THIS_MODEL_A_BIKE, veh_model))
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 24);
+                                modindex = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD, car, 24, modindex, true);
+                            }
+                            else
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 23);
+                                modindex = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD, car, 23, modindex, true);
+                            }
+                            int choose = rnd.Next(1, 3);
+                            if (choose == 1)
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 48);
+                                if (num != -1)
+                                {
+                                    modindex = rnd.Next(0, num + 1);
+                                    Function.Call(Hash.SET_VEHICLE_MOD, car, 48, modindex, true);
+                                }
+                            }
+                            else
+                            {
+                                modindex = rnd.Next(0, 7);
+                                num = Function.Call<int>(Hash.GET_NUM_MOD_COLORS, 6, true);
+                                int color_1 = rnd.Next(0, num + 1);
+                                int color_2 = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD_COLOR_1, car, modindex, color_1, 0);
+                                Function.Call(Hash.SET_VEHICLE_MOD_COLOR_2, car, modindex, color_2, 0);
+                            }
                         }
 
                         veh_model.MarkAsNoLongerNeeded();

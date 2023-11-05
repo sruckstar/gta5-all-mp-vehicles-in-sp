@@ -15,6 +15,8 @@ public class sportclassic : Script
     ScriptSettings config;
     private int doors_config = 0;
     private int blip_config = 0;
+    private int tuning_flag = 0;
+    private int[] mode_type = new int[5];
     private int spawned = 0;
     private int x = 0;
     private int all_coords;
@@ -31,6 +33,7 @@ public class sportclassic : Script
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
+        tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
 
         coords[0] = new Vector3(-1114.1f, 479.205f, 81.161f); 
         coords[1] = new Vector3(-161.232f, 274.911f, 92.534f);
@@ -175,6 +178,54 @@ public class sportclassic : Script
 
                         }
 
+                        if (tuning_flag == 1)
+                        {
+                            rnd = new Random();
+                            int num;
+                            int modindex;
+                            for (int a = 0; i <= 3; i++)
+                            {
+                                mode_type[i] = rnd.Next(0, 17);
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
+                                if (num != -1)
+                                {
+                                    modindex = rnd.Next(0, num + 1);
+                                    Function.Call(Hash.SET_VEHICLE_MOD, car, mode_type[a], modindex, true);
+                                }
+                            }
+                            if (Function.Call<bool>(Hash.IS_THIS_MODEL_A_BIKE, veh_model))
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 24);
+                                modindex = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD, car, 24, modindex, true);
+                            }
+                            else
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 23);
+                                modindex = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD, car, 23, modindex, true);
+                            }
+                            int choose = rnd.Next(1, 3);
+                            if (choose == 1)
+                            {
+                                num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 48);
+                                if (num != -1)
+                                {
+                                    modindex = rnd.Next(0, num + 1);
+                                    Function.Call(Hash.SET_VEHICLE_MOD, car, 48, modindex, true);
+                                }
+                            }
+                            else
+                            {
+                                modindex = rnd.Next(0, 7);
+                                num = Function.Call<int>(Hash.GET_NUM_MOD_COLORS, 6, true);
+                                int color_1 = rnd.Next(0, num + 1);
+                                int color_2 = rnd.Next(0, num + 1);
+                                Function.Call(Hash.SET_VEHICLE_MOD_COLOR_1, car, modindex, color_1, 0);
+                                Function.Call(Hash.SET_VEHICLE_MOD_COLOR_2, car, modindex, color_2, 0);
+                            }
+                        }
+
                         veh_model.MarkAsNoLongerNeeded();
                         x = i;
                         break;
@@ -182,7 +233,6 @@ public class sportclassic : Script
                 }
             }
 
-            //проверка, сидит ли игрок в заспавненном тс. если да, то ремув
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, true))
@@ -215,7 +265,7 @@ public class sportclassic : Script
             }
 
 
-            if (spawned == 1 && car != null) //удаление тс, если игрок покинул зону видимости 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
