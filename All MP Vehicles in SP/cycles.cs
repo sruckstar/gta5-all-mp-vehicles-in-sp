@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-public class cemetery : Script
+public class Cycles : Script
 {
     ScriptSettings config;
     private int doors_config = 0;
@@ -20,28 +20,33 @@ public class cemetery : Script
     private float distance = 150.0f;
     private Blip marker;
 
-    private Vector3[] coords = new Vector3[1];
-    private float[] angle = new float[1];
+    private Vector3[] coords = new Vector3[5];
+    private float[] angle = new float[5];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[5];
+    private VehicleHash[] models = new VehicleHash[2];
 
-    public cemetery()
+    public Cycles()
     {
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
 
-        coords[0] = new Vector3(-1640.42f, -202.879f, 54.146f); 
-        all_coords = 0;
+        coords[0] = new Vector3(-1374.766f, -1399.443f, 6.142528f);
+        coords[1] = new Vector3(-941.4034f, -792.0335f, 15.95103f);
+        coords[2] = new Vector3(274.6519f, -194.8017f, 61.57079f);
+        coords[3] = new Vector3(698.6535f, -1197.893f, 24.39086f);
+        coords[4] = new Vector3(840.2529f, -257.3479f, 65.66613f);
+        all_coords = 4;
 
-        angle[0] = 338.279f;
+        angle[0] = 352.5828f;
+        angle[1] = 1.6991f;
+        angle[2] = 255.056f;
+        angle[3] = 270.8829f;
+        angle[4] = 99.87038f;
 
-        models[0] = VehicleHash.Tornado6;
-        models[1] = VehicleHash.BType2;
-        models[2] = VehicleHash.Sanctus;
-        models[3] = VehicleHash.Lurcher;
-        models[4] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "brigham");
+        models[0] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "inductor");
+        models[1] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "inductor2");
 
         car = null;
         spawned = 0;
@@ -61,14 +66,11 @@ public class cemetery : Script
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
                         Random rnd = new Random();
-                        var veh_model = new Model(models[rnd.Next(0, 5)]);
+                        var veh_model = new Model(models[rnd.Next(0, 2)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
                         Function.Call(Hash.DECOR_SET_INT, car, "MPBitset", 0);
-
-
-
                         spawned = 1;
 
                         if (blip_config == 1)
@@ -96,18 +98,9 @@ public class cemetery : Script
 
             if (car != null)
             {
-                if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, true))
+                if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    if (doors_config == 1)
-                    {
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
-                        GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
-                    }
-
-                    if (blip_config == 1)
-                    {
-                        marker.Delete();
-                    }
+                    marker.Delete();
                     car.MarkAsNoLongerNeeded();
                     car = null;
                     position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
@@ -126,17 +119,14 @@ public class cemetery : Script
             }
 
 
-            if (spawned == 1 && car != null) 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)
                 {
-                    if (blip_config == 1)
-                    {
-                        marker.Delete();
-                    }
                     car.Delete();
                     car = null;
+                    marker.Delete();
                 }
             }
         }

@@ -26,7 +26,7 @@ public class Muscle : Script
     private float[] angle = new float[7];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[44];
+    private VehicleHash[] models = new VehicleHash[46];
 
     public Muscle()
     {
@@ -95,6 +95,8 @@ public class Muscle : Script
         models[41] = VehicleHash.Chino;
         models[42] = VehicleHash.Vigero;
         models[43] = VehicleHash.SlamVan2;
+        models[44] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "clique2");
+        models[45] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "buffalo5");
 
         car = null;
         spawned = 0;
@@ -114,7 +116,7 @@ public class Muscle : Script
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
                         Random rnd = new Random();
-                        var veh_model = new Model(models[rnd.Next(0, 44)]);
+                        var veh_model = new Model(models[rnd.Next(0, 46)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);

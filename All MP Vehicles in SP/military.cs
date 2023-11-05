@@ -17,10 +17,10 @@ public class Military : Script
     private float distance = 150.0f;
     private Blip marker;
 
-    private Vector3[] coords = new Vector3[16];
-    private float[] angle = new float[16];
-    private GTA.Vehicle[] car = new GTA.Vehicle[16];
-    private VehicleHash[] models = new VehicleHash[38];
+    private Vector3[] coords = new Vector3[19];
+    private float[] angle = new float[19];
+    private GTA.Vehicle[] car = new GTA.Vehicle[19];
+    private VehicleHash[] models = new VehicleHash[41];
 
     public Military()
     {
@@ -39,7 +39,10 @@ public class Military : Script
         coords[12] = new Vector3(-1934.867f, 3109.608f, 32.810f); 
         coords[13] = new Vector3(-1965.212f, 3101.532f, 32.810f); 
         coords[14] = new Vector3(-1907.528f, 3117.613f, 32.959f); 
-        coords[15] = new Vector3(-1903.383f, 3115.676f, 32.810f); 
+        coords[15] = new Vector3(-1903.383f, 3115.676f, 32.810f);
+        coords[16] = new Vector3(-2060.052f, 3146.352f, 32.8103f);
+        coords[17] = new Vector3(-2084.384f, 3161.351f, 32.8103f);
+        coords[18] = new Vector3(-2116.779f, 3166.792f, 32.8101f);
 
         angle[0] = 327.087f;
         angle[1] = 240.052f;
@@ -56,8 +59,10 @@ public class Military : Script
         angle[12] = 150.073f;
         angle[13] = 236.324f;
         angle[14] = 147.964f;
-        angle[15] = 150.114f;
-
+        angle[15] = 150.114f; 
+        angle[16] = 239.2013f;
+        angle[17] = 61.37347f;
+        angle[18] = 237.5298f;
 
         models[0] = VehicleHash.Vetir;
         models[1] = VehicleHash.Scarab;
@@ -105,6 +110,9 @@ public class Military : Script
         models[35] = VehicleHash.Manchez2;
         models[36] = VehicleHash.Winky;
         models[37] = VehicleHash.Insurgent3;
+        models[38] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "raiju");
+        models[39] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "streamer216");
+        models[40] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "conada2");
 
         spawned = 0;
         Tick += OnTick;
@@ -140,6 +148,15 @@ public class Military : Script
 
                 car[15] = World.CreateVehicle(models[rnd.Next(34, 38)], coords[15], angle[15]);
                 Function.Call(Hash.DECOR_SET_INT, car[15], "MPBitset", 0);
+
+                car[16] = World.CreateVehicle(models[38], coords[16], angle[16]);
+                Function.Call(Hash.DECOR_SET_INT, car[16], "MPBitset", 0);
+
+                car[17] = World.CreateVehicle(models[39], coords[17], angle[17]);
+                Function.Call(Hash.DECOR_SET_INT, car[17], "MPBitset", 0);
+
+                car[18] = World.CreateVehicle(models[40], coords[18], angle[18]);
+                Function.Call(Hash.DECOR_SET_INT, car[18], "MPBitset", 0);
 
                 spawned = 1;
             }
