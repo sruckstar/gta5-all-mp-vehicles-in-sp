@@ -43,6 +43,21 @@ public class Boats : Script
         car = null;
         spawned = 0;
         Tick += OnTick;
+        Aborted += OnAborded;
+    }
+
+    void OnAborded(object sender, EventArgs e)
+    {
+        //Delete blips
+        if (marker != null && marker.Exists())
+        {
+            marker.Delete();
+        }
+        //Delete_cars
+        if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_SITTING_IN_VEHICLE, Game.Player.Character, car))
+        {
+            car.Delete();
+        }
     }
 
     void OnTick(object sender, EventArgs e)
