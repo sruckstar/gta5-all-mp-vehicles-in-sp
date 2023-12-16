@@ -21,6 +21,7 @@ public class Muscle : Script
     private int x = 0;
     private float distance = 150.0f;
     private Blip marker;
+    private Blip street_marker;
 
     private int street_flag = 1;
     private int street_spawned = 0;
@@ -118,6 +119,7 @@ public class Muscle : Script
         car = null;
         spawned = 0;
         Tick += OnTick;
+        Aborted += OnAborded;
     }
 
     public enum Nodetype
@@ -178,13 +180,40 @@ public class Muscle : Script
         street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_car, true);
         street_driver.Task.CruiseWithVehicle(street_car, street_speed, DrivingStyle.Normal);
 
-        if (blip_config == 1)
+        if (street_blip == 1)
         {
-            marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, street_car);
-            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, marker, 1);
-            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, marker, 3);
+            street_marker = GTA.Native.Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, street_car);
+            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, street_marker, 1);
+            GTA.Native.Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, street_marker, 3);
             GTA.Native.Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
-            marker.Name = "Unique vehicle";
+            street_marker.Name = "Unique vehicle";
+        }
+    }
+
+    void OnAborded(object sender, EventArgs e)
+    {
+        //Delete blips
+        if (marker != null && marker.Exists())
+        {
+            marker.Delete();
+        }
+        if (street_marker != null && street_marker.Exists())
+        {
+            street_marker.Delete();
+        }
+        //Delete peds
+        if (street_driver != null && street_driver.Exists())
+        {
+            street_driver.Delete();
+        }
+        //Delete_cars
+        if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_SITTING_IN_VEHICLE, Game.Player.Character, car))
+        {
+            car.Delete();
+        }
+        if (street_car != null && street_car.Exists() && !Function.Call<bool>(Hash.IS_PED_SITTING_IN_VEHICLE, Game.Player.Character, street_car))
+        {
+            street_car.Delete();
         }
     }
 
