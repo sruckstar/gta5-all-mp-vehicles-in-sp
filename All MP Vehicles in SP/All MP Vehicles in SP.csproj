@@ -53,6 +53,7 @@
     <Compile Include="cemetery.cs" />
     <Compile Include="cheburek.cs" />
     <Compile Include="cinema.cs" />
+    <Compile Include="cluckin.cs" />
     <Compile Include="compacts.cs" />
     <Compile Include="coupes.cs" />
     <Compile Include="cycles.cs" />

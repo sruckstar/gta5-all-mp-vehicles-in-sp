@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-public class Police : Script
+public class Cluckin : Script
 {
     ScriptSettings config;
     private int doors_config = 0;
@@ -20,34 +20,24 @@ public class Police : Script
     private float distance = 150.0f;
     private Blip marker;
 
-    private Vector3[] coords = new Vector3[5];
-    private float[] angle = new float[5];
+    private Vector3[] coords = new Vector3[1];
+    private float[] angle = new float[1];
     private GTA.Vehicle car;
     private int all_coords;
-    private VehicleHash[] models = new VehicleHash[3];
+    private VehicleHash[] models = new VehicleHash[1];
 
-    public Police()
+    public Cluckin()
     {
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
 
-        coords[0] = new Vector3(-449.017f, 6052.354f, 31.341f); 
-        coords[1] = new Vector3(1867.271f, 3696.303f, 33.606f); 
-        coords[2] = new Vector3(627.670f, 23.037f, 87.688f); 
-        coords[3] = new Vector3(-1051.572f, -867.256f, 5.129f); 
-        coords[4] = new Vector3(375.766f, -1612.061f, 29.292f);
-        all_coords = 4;
+        coords[0] = new Vector3(-19.54006f, 6321.509f, 31.22962f);
+        all_coords = 0;
 
-        angle[0] = 35.312f;
-        angle[1] = 29.408f;
-        angle[2] = 205.571f;
-        angle[3] = 240.586f;
-        angle[4] = 230.537f;
+        angle[0] = 31.66455f;
 
-        models[0] = VehicleHash.Riot2;
-        models[1] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "polgauntlet");
-        models[2] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "police5");
+        models[0] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "benson2");
 
         car = null;
         spawned = 0;
@@ -66,8 +56,7 @@ public class Police : Script
                 {
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
-                        Random rnd = new Random();
-                        var veh_model = new Model(models[rnd.Next(0, 3)]);
+                        var veh_model = new Model(models[0]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
@@ -83,12 +72,6 @@ public class Police : Script
                             marker.Name = "Unique vehicle";
                         }
 
-                        if (doors_config == 1)
-                        {
-                            GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
-
-                        }
-
                         veh_model.MarkAsNoLongerNeeded();
                         x = i;
                         break;
@@ -96,17 +79,11 @@ public class Police : Script
                 }
             }
 
-            
+
             if (car != null)
             {
                 if (GTA.Native.Function.Call<bool>(GTA.Native.Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
                 {
-                    if (doors_config == 1)
-                    {
-                        GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_ALARM, car, true);
-                        GTA.Native.Function.Call(GTA.Native.Hash.START_VEHICLE_ALARM, car);
-                    }
-
                     if (blip_config == 1)
                     {
                         marker.Delete();
@@ -129,7 +106,7 @@ public class Police : Script
             }
 
 
-            if (spawned == 1 && car != null) 
+            if (spawned == 1 && car != null)
             {
                 position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
                 if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[x].X, coords[x].Y, coords[x].Z, position.X, position.Y, position.Z, 0) > distance)

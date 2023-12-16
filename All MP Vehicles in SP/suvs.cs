@@ -31,7 +31,7 @@ public class Suvs : Script
     private Vector3 street_coords = Vector3.Zero;
     private int street_blip = 0;
 
-    private static int cars_number = 18; // To add a new vehicle, change this number
+    private static int cars_number = 23; // To add a new vehicle, change this number
 
     private Vector3[] coords = new Vector3[8];
     private float[] angle = new float[8];
@@ -83,6 +83,11 @@ public class Suvs : Script
         models[15] = VehicleHash.Baller4;
         models[16] = VehicleHash.Baller5;
         models[17] = VehicleHash.Baller6;
+        models[18] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "vivanite");
+        models[19] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "aleutian");
+        models[20] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "cavalcade3");
+        models[21] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "baller8");
+        models[22] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "dorado");
 
         car = null;
         spawned = 0;

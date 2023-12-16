@@ -34,7 +34,7 @@ public class Muscle : Script
     private Vector3[] coords = new Vector3[7];
     private float[] angle = new float[7];
 
-    private static int cars_number = 46; // To add a new vehicle, change this number
+    private static int cars_number = 49; // To add a new vehicle, change this number
 
     private GTA.Vehicle car;
     private int all_coords;
@@ -111,6 +111,9 @@ public class Muscle : Script
         models[43] = VehicleHash.SlamVan2;
         models[44] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "clique2");
         models[45] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "buffalo5");
+        models[46] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "vigero3");
+        models[47] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "dominator9");
+        models[48] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "impaler6");
 
         car = null;
         spawned = 0;

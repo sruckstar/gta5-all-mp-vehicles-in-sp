@@ -31,7 +31,7 @@ public class supers : Script
     private Vector3 street_coords = Vector3.Zero;
     private int street_blip = 0;
 
-    private static int cars_number = 43; // To add a new vehicle, change this number
+    private static int cars_number = 44; // To add a new vehicle, change this number
 
     private Vector3[] coords = new Vector3[7];
     private float[] angle = new float[7];
@@ -105,6 +105,7 @@ public class supers : Script
         models[40] = VehicleHash.Banshee2;
         models[41] = VehicleHash.T20;
         models[42] = VehicleHash.Osiris;
+        models[43] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "turismo3");
 
         car = null;
         spawned = 0;

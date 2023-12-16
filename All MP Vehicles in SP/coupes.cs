@@ -31,7 +31,7 @@ public class Coupes : Script
     private Vector3 street_coords = Vector3.Zero;
     private int street_blip = 0;
 
-    private static int cars_number = 5; // To add a new vehicle, change this number
+    private static int cars_number = 6; // To add a new vehicle, change this number
 
     private Vector3[] coords = new Vector3[7];
     private float[] angle = new float[7];
@@ -70,6 +70,7 @@ public class Coupes : Script
         models[2] = VehicleHash.Previon;
         models[3] = VehicleHash.Windsor2;
         models[4] = VehicleHash.Windsor;
+        models[5] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "fr36");
 
         car = null;
         spawned = 0;

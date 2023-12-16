@@ -31,7 +31,7 @@ public class Sedans : Script
     private Vector3 street_coords = Vector3.Zero;
     private int street_blip = 0;
 
-    private static int cars_number = 17; // To add a new vehicle, change this number
+    private static int cars_number = 19; // To add a new vehicle, change this number
 
     private Vector3[] coords = new Vector3[7];
     private float[] angle = new float[7];
@@ -81,6 +81,8 @@ public class Sedans : Script
         models[14] = VehicleHash.Cognoscenti2;
         models[15] = VehicleHash.Cognoscenti;
         models[16] = VehicleHash.Primo2;
+        models[17] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "asterope2");
+        models[18] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "impaler5");
 
         car = null;
         spawned = 0;
