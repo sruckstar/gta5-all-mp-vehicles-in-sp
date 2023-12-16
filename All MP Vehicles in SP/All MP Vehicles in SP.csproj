@@ -78,6 +78,7 @@
     <Compile Include="submarine.cs" />
     <Compile Include="supers.cs" />
     <Compile Include="suvs.cs" />
+    <Compile Include="towtrucks.cs" />
     <Compile Include="tuners.cs" />
     <Compile Include="valentine.cs" />
     <Compile Include="vans.cs" />

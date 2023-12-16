@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-public class Cluckin : Script
+public class TowTrucks : Script
 {
     ScriptSettings config;
     private int doors_config = 0;
@@ -34,13 +34,13 @@ public class Cluckin : Script
 
     private static int cars_number = 1; // To add a new vehicle, change this number
 
-    private Vector3[] coords = new Vector3[1];
-    private float[] angle = new float[1];
+    private Vector3[] coords = new Vector3[5];
+    private float[] angle = new float[5];
     private GTA.Vehicle car;
     private int all_coords;
     private VehicleHash[] models = new VehicleHash[cars_number];
 
-    public Cluckin()
+    public TowTrucks()
     {
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
@@ -49,12 +49,20 @@ public class Cluckin : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(-19.4496f, 6321.813f, 31.22966f);
-        all_coords = 0;
+        coords[0] = new Vector3(-198.5697f, 6273.029f, 31.48925f);
+        coords[1] = new Vector3(2502.232f, 4080.495f, 38.63095f);
+        coords[2] = new Vector3(1203.418f, -1262.387f, 35.22676f);
+        coords[3] = new Vector3(-71.37413f, -1339.442f, 29.25686f);
+        coords[4] = new Vector3(-464.9293f, -1718.74f, 18.66934f);
+        all_coords = 4;
 
-        angle[0] = 30.12479f;
+        angle[0] = 313.6799f;
+        angle[1] = 68.68851f;
+        angle[2] = 178.5483f;
+        angle[3] = 89.01824f;
+        angle[4] = 244.1471f;
 
-        models[0] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "benson2");
+        models[0] = Function.Call<VehicleHash>(Hash.GET_HASH_KEY, "towtruck4");
 
         car = null;
         spawned = 0;
@@ -110,7 +118,7 @@ public class Cluckin : Script
         street_coords = outArgA.GetResult<Vector3>();
         street_angle = outArgB.GetResult<float>();
         Random rnd = new Random();
-        var veh_model = new Model(models[0]);
+        var veh_model = new Model(models[rnd.Next(0, cars_number)]);
         veh_model.Request(500);
         while (!veh_model.IsLoaded) Script.Wait(100);
         street_car = World.CreateVehicle(veh_model, street_coords, street_angle);
@@ -169,7 +177,8 @@ public class Cluckin : Script
                 {
                     if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, coords[i].X, coords[i].Y, coords[i].Z, position.X, position.Y, position.Z, 0) < distance)
                     {
-                        var veh_model = new Model(models[0]);
+                        Random rnd = new Random();
+                        var veh_model = new Model(models[rnd.Next(0, cars_number)]);
                         veh_model.Request(500);
                         while (!veh_model.IsLoaded) Script.Wait(100);
                         car = World.CreateVehicle(veh_model, coords[i], angle[i]);
@@ -194,12 +203,11 @@ public class Cluckin : Script
                         if (doors_config == 1)
                         {
                             GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
-
                         }
 
                         if (tuning_flag == 1)
                         {
-                            Random rnd = new Random();
+                            rnd = new Random();
                             int num;
                             int modindex;
                             for (int a = 0; a <= 3; a++)
