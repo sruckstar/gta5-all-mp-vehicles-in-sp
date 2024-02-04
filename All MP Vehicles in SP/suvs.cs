@@ -49,22 +49,24 @@ public class Suvs : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(-2340.76f, 296.197f, 168.467f);
-        coords[1] = new Vector3(629.014f, 196.173f, 96.128f);
-        coords[2] = new Vector3(1150.161f, -991.569f, 44.528f);
-        coords[3] = new Vector3(244.916f, -860.606f, 28.5f); 
-        coords[4] = new Vector3(-340.099f, -876.452f, 30.071f);
-        coords[5] = new Vector3(387.275f, -215.651f, 55.835f); 
-        coords[6] = new Vector3(-1234.11f, -1646.83f, 3.129f); 
-        coords[7] = new Vector3(-472.038f, 6034.981f, 30.341f); 
+        coords[0] = new Vector3(-2340.907f, 295.8933f, 169.1187f);
+        coords[1] = new Vector3(627.8824f, 196.4409f, 96.67142f);
+        coords[2] = new Vector3(1147.651f, -985.0583f, 45.4853f);
+        coords[3] = new Vector3(243.1413f, -861.0181f, 28.94244f); 
+        coords[4] = new Vector3(-340.161f, -876.799f, 30.90968f);
+        coords[5] = new Vector3(388.3879f, -215.6955f, 56.76986f); 
+        coords[6] = new Vector3(-1235.388f, -1647.45f, 3.512795f); 
+        coords[7] = new Vector3(-472.0576f, 6034.684f, 30.74616f); 
         all_coords = 7;
 
-        angle[0] = 146.244f;
-        angle[1] = 141.262f;
-        angle[2] = 47.597f;
-        angle[3] = 138.808f;
-        angle[4] = 33.185f;
-        angle[4] = 33.185f;
+        angle[0] = 294.0081f;
+        angle[1] = 70.38502f;
+        angle[2] = 182.3871f;
+        angle[3] = 248.5342f;
+        angle[4] = 347.7794f;
+        angle[5] = 341.7853f;
+        angle[6] = 124.5176f;
+        angle[7] = 43.40757f;
 
         models[0] = VehicleHash.Issi8;
         models[1] = VehicleHash.Granger2;

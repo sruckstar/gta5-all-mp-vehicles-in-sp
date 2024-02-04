@@ -32,10 +32,10 @@ public class Cinema : Script
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
 
-        coords[0] = new Vector3(-1085.16f, -476.529f, 35.636f); 
+        coords[0] = new Vector3(-1084.873f, -477.591f, 36.2069f); 
         all_coords = 0;
 
-        angle[0] = 23.241f;
+        angle[0] = 27.92156f;
 
         models[0] = VehicleHash.Scramjet;
         models[1] = VehicleHash.Vigilante;

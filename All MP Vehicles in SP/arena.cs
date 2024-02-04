@@ -32,10 +32,10 @@ public class Arena : Script
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
 
-        coords[0] = new Vector3(-237.521f, -2059.95f, 26.62f);
+        coords[0] = new Vector3(-236.7005f, -2061.008f, 27.48775f);
         all_coords = 0;
 
-        angle[0] = 40.850f;
+        angle[0] = 41.83847f;
 
         models[0] = VehicleHash.Boxville5;
         models[1] = VehicleHash.ZR380;

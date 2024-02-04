@@ -34,14 +34,14 @@ public class Police : Script
 
         coords[0] = new Vector3(-449.017f, 6052.354f, 31.341f); 
         coords[1] = new Vector3(1867.271f, 3696.303f, 33.606f); 
-        coords[2] = new Vector3(627.670f, 23.037f, 87.688f); 
+        coords[2] = new Vector3(626.4047f, 27.50228f, 87.9091f); 
         coords[3] = new Vector3(-1051.572f, -867.256f, 5.129f); 
         coords[4] = new Vector3(375.766f, -1612.061f, 29.292f);
         all_coords = 4;
 
         angle[0] = 35.312f;
         angle[1] = 29.408f;
-        angle[2] = 205.571f;
+        angle[2] = 198.4456f;
         angle[3] = 240.586f;
         angle[4] = 230.537f;
 

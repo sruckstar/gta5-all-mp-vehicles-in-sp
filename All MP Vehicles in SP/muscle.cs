@@ -50,21 +50,22 @@ public class Muscle : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(-604.458f, -1218.29f, 13.507f); 
-        coords[1] = new Vector3(28.385f, -1707.34f, 28.298f); 
-        coords[2] = new Vector3(-329.7f, -700.958f, 31.912f); 
-        coords[3] = new Vector3(238.339f, -35.01f, 68.728f);
-        coords[4] = new Vector3(393.61f, -649.557f, 27.5f);
-        coords[5] = new Vector3(124.231f, -1472.5f, 28.142f); 
+        coords[0] = new Vector3(-604.9778f, -1218.401f, 13.92473f); 
+        coords[1] = new Vector3(31.46499f, -1706.062f, 28.6591f); 
+        coords[2] = new Vector3(-329.9433f, -700.7843f, 32.33982f); 
+        coords[3] = new Vector3(238.2489f, -34.84402f, 69.18212f);
+        coords[4] = new Vector3(393.4623f, -649.7198f, 27.92926f);
+        coords[5] = new Vector3(124.0182f, -1472.58f, 28.6794f); 
         coords[6] = new Vector3(185.595f, -1016.01f, 28.3f); 
         all_coords = 6;
 
-        angle[0] = 146.244f;
-        angle[1] = 141.262f;
-        angle[2] = 47.597f;
-        angle[3] = 138.808f;
-        angle[4] = 33.185f;
-        angle[4] = 33.185f;
+        angle[0] = 133.0528f;
+        angle[1] = 23.36283f;
+        angle[2] = 88.68892f;
+        angle[3] = 340.165f;
+        angle[4] = 90.89349f;
+        angle[5] = 321.0109f;
+        angle[6] = 33.185f;
 
         models[0] = VehicleHash.Tahoma;
         models[1] = VehicleHash.Tulip2;

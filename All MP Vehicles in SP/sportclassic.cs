@@ -50,7 +50,7 @@ public class sportclassic : Script
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
         coords[0] = new Vector3(-1114.1f, 479.205f, 81.161f); 
-        coords[1] = new Vector3(-161.232f, 274.911f, 92.534f);
+        coords[1] = new Vector3(-160.8898f, 275.334f, 92.95601f);
         coords[2] = new Vector3(-504.323f, 424.21f, 96.287f); 
         coords[3] = new Vector3(-1405.12f, 81.983f, 52.099f); 
         coords[4] = new Vector3(-1299.92f, -228.464f, 59.654f);
@@ -60,7 +60,7 @@ public class sportclassic : Script
         all_coords = 7;
 
         angle[0] = 171.220f;
-        angle[1] = 272.080f;
+        angle[1] = 176.2266f;
         angle[2] = 313.167f;
         angle[3] = 53.145f;
         angle[4] = 126.968f;

@@ -49,20 +49,20 @@ public class Motorcycles : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(-2316.49f, 280.86f, 168.467f);
+        coords[0] = new Vector3(-2316.357f, 280.0749f, 168.9348f);
         coords[1] = new Vector3(-3036.57f, 105.31f, 10.593f); 
-        coords[2] = new Vector3(-3071.87f, 658.171f, 9.918f); 
-        coords[3] = new Vector3(-1534.83f, 889.731f, 180.803f);
-        coords[4] = new Vector3(231.935f, 1162.313f, 224.464f); 
-        coords[5] = new Vector3(-582.454f, -859.433f, 25.034f); 
+        coords[2] = new Vector3(-3072.296f, 657.9456f, 10.53257f); 
+        coords[3] = new Vector3(-1535.044f, 890.5871f, 181.3348f);
+        coords[4] = new Vector3(231.9765f, 1161.922f, 224.9349f); 
+        coords[5] = new Vector3(-582.6653f, -859.2297f, 25.49919f); 
         all_coords = 5;
 
-        angle[0] = 146.244f;
+        angle[0] = 201.5139f;
         angle[1] = 141.262f;
-        angle[2] = 47.597f;
-        angle[3] = 138.808f;
-        angle[4] = 33.185f;
-        angle[5] = 33.185f;
+        angle[2] = 311.2028f;
+        angle[3] = 19.50508f;
+        angle[4] = 98.82303f;
+        angle[5] = 358.6906f;
 
         models[0] = VehicleHash.Powersurge;
         models[1] = VehicleHash.Manchez3;

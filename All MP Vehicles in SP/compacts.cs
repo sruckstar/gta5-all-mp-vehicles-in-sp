@@ -49,20 +49,20 @@ public class compacts : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(-1409.08f, -590.823f, 29.317f); 
-        coords[1] = new Vector3(-817.325f, -1201.59f, 5.935f); 
-        coords[2] = new Vector3(-489.189f, -596.899f, 30.174f); 
-        coords[3] = new Vector3(871.548f, -75.386f, 77.764f); 
+        coords[0] = new Vector3(-1407.751f, -589.1447f, 29.65687f);  
+        coords[1] = new Vector3(-817.325f, -1201.59f, 5.935f);  
+        coords[2] = new Vector3(-489.2397f, -596.5908f, 30.56949f); 
+        coords[3] = new Vector3(870.7411f, -75.28734f, 78.10686f); 
         coords[4] = new Vector3(110.261f, -714.605f, 32.133f); 
         coords[5] = new Vector3(-220.102f, -590.273f, 33.264f);
         all_coords = 5;
 
-        angle[0] = 126.963f;
+        angle[0] = 298.6727f;
         angle[1] = 318.133f;
-        angle[2] = 355.228f;
-        angle[3] = 148.566f;
+        angle[2] = 358.1453f;
+        angle[3] = 147.4842f;
         angle[4] = 341.667f;
-        angle[4] = 341.667f;
+        angle[5] = 341.667f;
 
         models[0] = VehicleHash.Brioso3;
         models[1] = VehicleHash.Brioso2;

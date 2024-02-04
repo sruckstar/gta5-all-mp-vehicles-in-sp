@@ -49,21 +49,23 @@ public class Sedans : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(1156.682f, -1474.15f, 33.693f); 
-        coords[1] = new Vector3(-936.334f, -2692.07f, 15.611f); 
-        coords[2] = new Vector3(-532.351f, -2134.22f, 4.992f); 
-        coords[3] = new Vector3(-1528.44f, -427.05f, 34.447f); 
-        coords[4] = new Vector3(642.042f, 587.747f, 127.911f); 
-        coords[5] = new Vector3(-3138.86f, 1086.83f, 19.669f);
-        coords[6] = new Vector3(-1144.0f, 2666.28f, 17.094f); 
+        coords[0] = new Vector3(1156.74f, -1474.257f, 33.9701f); 
+        coords[1] = new Vector3(-936.2781f, -2692.023f, 16.11801f); 
+        coords[2] = new Vector3(-532.5765f, -2133.869f, 5.491799f); 
+        coords[3] = new Vector3(-1528.733f, -427.0032f, 35.01511f); 
+        coords[4] = new Vector3(642.1031f, 587.9972f, 128.4254f); 
+        coords[5] = new Vector3(-3139.044f, 1086.714f, 20.23225f);
+        coords[6] = new Vector3(-1144.189f, 2666.219f, 17.47463f); 
         all_coords = 6;
 
-        angle[0] = 146.244f;
-        angle[1] = 141.262f;
-        angle[2] = 47.597f;
-        angle[3] = 138.808f;
+        angle[0] = 268.8033f;
+        angle[1] = 241.2007f;
+        angle[2] = 353.1183f;
+        angle[3] = 48.3741f;
         angle[4] = 33.185f;
-        angle[4] = 33.185f;
+        angle[4] = 160.4295f;
+        angle[5] = 261.8192f;
+        angle[6] = 38.59731f;
 
         models[0] = VehicleHash.Rhinehart;
         models[1] = VehicleHash.Deity;

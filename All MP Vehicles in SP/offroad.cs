@@ -49,16 +49,16 @@ public class Offroad : Script
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
 
-        coords[0] = new Vector3(386.663f, 2640.138f, 43.493f);
-        coords[1] = new Vector3(1991.707f, 3078.063f, 46.016f);
-        coords[2] = new Vector3(1977.207f, 3837.1f, 30.997f); 
-        coords[3] = new Vector3(1350.173f, 3601.249f, 33.899f); 
+        coords[0] = new Vector3(392.6896f, 2641.558f, 44.07256f);
+        coords[1] = new Vector3(1991.201f, 3076.069f, 46.79815f);
+        coords[2] = new Vector3(1977.402f, 3835.433f, 31.59359f); 
+        coords[3] = new Vector3(1350.489f, 3605.351f, 34.47185f); 
         all_coords = 3;
 
-        angle[0] = 126.963f;
-        angle[1] = 318.133f;
-        angle[2] = 355.228f;
-        angle[3] = 148.566f;
+        angle[0] = 205.5221f;
+        angle[1] = 58.8943f;
+        angle[2] = 297.7102f;
+        angle[3] = 16.77524f;
 
         models[0] = VehicleHash.Boor;
         models[1] = VehicleHash.Draugur;

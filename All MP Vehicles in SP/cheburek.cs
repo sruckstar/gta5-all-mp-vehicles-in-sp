@@ -60,6 +60,7 @@ public class Cheburek : Script
         car = null;
         spawned = 0;
         Tick += OnTick;
+        Aborted += OnAborded;
     }
 
     public enum Nodetype
