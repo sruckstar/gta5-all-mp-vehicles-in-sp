@@ -48,42 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="arena.cs" />
-    <Compile Include="boats.cs" />
-    <Compile Include="cemetery.cs" />
-    <Compile Include="cheburek.cs" />
-    <Compile Include="cinema.cs" />
-    <Compile Include="cluckin.cs" />
-    <Compile Include="compacts.cs" />
-    <Compile Include="coupes.cs" />
-    <Compile Include="cycles.cs" />
-    <Compile Include="ghetto.cs" />
-    <Compile Include="helicopters.cs" />
-    <Compile Include="humanlabs.cs" />
-    <Compile Include="industrial.cs" />
-    <Compile Include="karting.cs" />
-    <Compile Include="kosatka.cs" />
-    <Compile Include="military.cs" />
-    <Compile Include="motorcycles.cs" />
-    <Compile Include="muscle.cs" />
-    <Compile Include="offroad.cs" />
-    <Compile Include="openwheel.cs" />
-    <Compile Include="pbus2.cs" />
-    <Compile Include="planes.cs" />
-    <Compile Include="police.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="sedans.cs" />
-    <Compile Include="slawmantruck.cs" />
-    <Compile Include="sportclassic.cs" />
-    <Compile Include="submarine.cs" />
-    <Compile Include="supers.cs" />
-    <Compile Include="suvs.cs" />
-    <Compile Include="towtrucks.cs" />
-    <Compile Include="tuners.cs" />
-    <Compile Include="valentine.cs" />
-    <Compile Include="vans.cs" />
-    <Compile Include="wastelander.cs" />
-    <Compile Include="weaponboats.cs" />
+    <Compile Include="SpawnMP.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
