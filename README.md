@@ -12,13 +12,13 @@ Join my Discord server: https://discord.gg/vvxmKP5y5J
 
 # Installation
 
-1. Download ScriptHookV
-2. Download ScriptHookVDotNet
-3. Move all files from the archive to the scripts folder (if it does not exist, create it).
+1. Download [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
+2. Download [ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet/releases/latest)
+3. Move all files from the archive to the `scripts` folder (if it does not exist, create it).
 
 # Script Settings
 
-You can open the AllMpVehiclesInSp.ini file to modify the script settings.
+You can open the `AllMpVehiclesInSp.ini` file to modify the script settings.
 
 0 - disable
 1 - enable
