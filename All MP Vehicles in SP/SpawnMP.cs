@@ -23,9 +23,9 @@ public class SpawnMP : Script
     private int street_flag;
     private int street_blip;
     private int mod_plate;
+    private int cooldown = 0;
     private Vehicle[] veh = new Vehicle[200];
     private Vehicle[] street_veh = new Vehicle[200];
-    private Ped[] street_driver = new Ped[200];
     private List<Blip> marker = new List<Blip>();
 
     //Coords
@@ -1170,6 +1170,498 @@ public class SpawnMP : Script
         Water
     }
 
+    string GenerateVehicleModelName(int index_db, int type)
+    {
+        //0 - машина на парковку, 1 - машина для спавна в трафике
+        string model_name = null;
+        bool isEmpty;
+        var random = new Random();
+        switch (index_db)
+        {
+            case arena:
+                isEmpty = !models_arena.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_arena[random.Next(models_arena.Count)];
+                }
+                break;
+
+            case boats:
+                isEmpty = !models_boats.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_boats[random.Next(models_boats.Count)];
+                }
+                break;
+
+            case cemetery:
+                isEmpty = !models_cemetery.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_cemetery[random.Next(models_cemetery.Count)];
+                }
+                break;
+
+            case cheburek:
+                isEmpty = !models_cheburek.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_cheburek[random.Next(models_cheburek.Count)];
+                }
+                break;
+
+            case cinema:
+                isEmpty = !models_cinema.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_cinema[random.Next(models_cinema.Count)];
+                }
+                break;
+
+            case cluckin:
+                isEmpty = !models_cluckin.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_cluckin[random.Next(models_cluckin.Count)];
+                }
+                break;
+
+            case compacts_1:
+            case compacts_2:
+            case compacts_3:
+            case compacts_4:
+            case compacts_5:
+            case compacts_6:
+                isEmpty = !models_compacts.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_compacts[random.Next(models_compacts.Count)];
+                }
+                break;
+
+            case coupes_1:
+            case coupes_2:
+            case coupes_3:
+            case coupes_4:
+            case coupes_5:
+            case coupes_6:
+            case coupes_7:
+                isEmpty = !models_coupes.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_coupes[random.Next(models_coupes.Count)];
+                }
+                break;
+
+            case cycles_1:
+            case cycles_2:
+            case cycles_3:
+            case cycles_4:
+            case cycles_5:
+                isEmpty = !models_cycles.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_cycles[random.Next(models_cycles.Count)];
+                }
+                break;
+
+            case ghetto_1:
+            case ghetto_2:
+            case ghetto_3:
+            case ghetto_4:
+            case ghetto_5:
+                isEmpty = !models_ghetto.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_ghetto[random.Next(models_ghetto.Count)];
+                }
+                break;
+
+            case helicopter:
+                isEmpty = !models_helicopter.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_helicopter[random.Next(models_helicopter.Count)];
+                }
+                break;
+
+            case humanlabs:
+                isEmpty = !models_humanlabs.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_humanlabs[random.Next(models_humanlabs.Count)];
+                }
+                break;
+
+            case industrial_1:
+            case industrial_2:
+            case industrial_3:
+            case industrial_4:
+                isEmpty = !models_industrial.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_industrial[random.Next(models_industrial.Count)];
+                }
+                break;
+
+            case karting:
+                isEmpty = !models_karting.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_karting[random.Next(models_karting.Count)];
+                }
+                break;
+
+            case vetir:
+                if (veh[index_db] == null && vetir_model != "Blocked")
+                {
+                    model_name = models_karting[random.Next(models_karting.Count)];
+                }
+                break;
+
+            case scarab:
+                if (veh[index_db] == null && scarab_model != "Blocked")
+                {
+                    model_name = scarab_model;
+                }
+                break;
+
+            case terrorbyte:
+                if (veh[index_db] == null && terrorbyte_model != "Blocked")
+                {
+                    model_name = terrorbyte_model;
+                }
+                break;
+
+            case thruster:
+                if (veh[index_db] == null && thruster_model != "Blocked")
+                {
+                    model_name = thruster_model;
+                }
+                break;
+
+            case khanjari:
+                if (veh[index_db] == null && khanjari_model != "Blocked")
+                {
+                    model_name = khanjari_model;
+                }
+                break;
+
+            case chernobog:
+                if (veh[index_db] == null && chernobog_model != "Blocked")
+                {
+                    model_name = chernobog_model;
+                }
+                break;
+
+            case barrage:
+                if (veh[index_db] == null && barrage_model != "Blocked")
+                {
+                    model_name = barrage_model;
+                }
+                break;
+
+            case trailerLarge:
+                if (veh[index_db] == null && trailerLarge_model != "Blocked")
+                {
+                    model_name = trailerLarge_model;
+                }
+                break;
+
+            case halfTrack:
+                if (veh[index_db] == null && halfTrack_model != "Blocked")
+                {
+                    model_name = halfTrack_model;
+                }
+                break;
+
+            case apc:
+                if (veh[index_db] == null && apc_model != "Blocked")
+                {
+                    model_name = apc_model;
+                }
+                break;
+
+            case trailerSmall2:
+                if (veh[index_db] == null && trailerSmall2_model != "Blocked")
+                {
+                    model_name = trailerSmall2_model;
+                }
+                break;
+
+            case military_planes_1:
+            case military_planes_2:
+                isEmpty = !models_military_planes.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_military_planes[random.Next(models_military_planes.Count)];
+                }
+                break;
+
+            case military_helicopters:
+                isEmpty = !models_military_helicopters.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_military_helicopters[random.Next(models_military_helicopters.Count)];
+                }
+                break;
+
+            case military_opressors:
+                isEmpty = !models_military_opressors.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_military_opressors[random.Next(models_military_opressors.Count)];
+                }
+                break;
+
+            case military_bikes:
+                isEmpty = !models_military_bikes.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_military_bikes[random.Next(models_military_bikes.Count)];
+                }
+                break;
+
+            case raiju:
+                if (veh[index_db] == null && raiju_model != "Blocked")
+                {
+                    model_name = raiju_model;
+                }
+                break;
+
+            case streamer216:
+                if (veh[index_db] == null && streamer216_model != "Blocked")
+                {
+                    model_name = streamer216_model;
+                }
+                break;
+
+            case conada2:
+                if (veh[index_db] == null && conada2_model != "Blocked")
+                {
+                    model_name = conada2_model;
+                }
+                break;
+
+            case motorcycles_1:
+            case motorcycles_2:
+            case motorcycles_3:
+            case motorcycles_4:
+            case motorcycles_5:
+            case motorcycles_6:
+                isEmpty = !models_motorcycles.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_motorcycles[random.Next(models_motorcycles.Count)];
+                }
+                break;
+
+            case muscle_1:
+            case muscle_2:
+            case muscle_3:
+            case muscle_4:
+            case muscle_5:
+            case muscle_6:
+            case muscle_7:
+                isEmpty = !models_muscle.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_muscle[random.Next(models_muscle.Count)];
+                }
+                break;
+
+            case offroad_1:
+            case offroad_2:
+            case offroad_3:
+            case offroad_4:
+                isEmpty = !models_offroad.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_offroad[random.Next(models_offroad.Count)];
+                }
+                break;
+
+            case openwheel:
+                isEmpty = !models_openwheel.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_openwheel[random.Next(models_openwheel.Count)];
+                }
+                break;
+
+            case beach:
+                isEmpty = !models_beach.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_beach[random.Next(models_beach.Count)];
+                }
+                break;
+
+            case planes:
+                isEmpty = !models_planes.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_planes[random.Next(models_planes.Count)];
+                }
+                break;
+
+            case police_1:
+            case police_2:
+            case police_3:
+            case police_4:
+            case police_5:
+                isEmpty = !models_police.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_police[random.Next(models_police.Count)];
+                }
+                break;
+
+            case sedans_1:
+            case sedans_2:
+            case sedans_3:
+            case sedans_4:
+            case sedans_5:
+            case sedans_6:
+            case sedans_7:
+                isEmpty = !models_sedans.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_sedans[random.Next(models_sedans.Count)];
+                }
+                break;
+
+            case slawmantruck:
+                isEmpty = !models_slawmantruck.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_slawmantruck[random.Next(models_slawmantruck.Count)];
+                }
+                break;
+
+            case sportclassic_1:
+            case sportclassic_2:
+            case sportclassic_3:
+            case sportclassic_4:
+            case sportclassic_5:
+            case sportclassic_6:
+            case sportclassic_7:
+            case sportclassic_8:
+                isEmpty = !models_sportclassic.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_sportclassic[random.Next(models_sportclassic.Count)];
+                }
+                break;
+
+            case submarine:
+                isEmpty = !models_submarine.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_submarine[random.Next(models_submarine.Count)];
+                }
+                break;
+
+            case supers_1:
+            case supers_2:
+            case supers_3:
+            case supers_4:
+            case supers_5:
+            case supers_6:
+            case supers_7:
+                isEmpty = !models_supers.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_supers[random.Next(models_supers.Count)];
+                }
+                break;
+
+            case suvs_1:
+            case suvs_2:
+            case suvs_3:
+            case suvs_4:
+            case suvs_5:
+            case suvs_6:
+            case suvs_7:
+            case suvs_8:
+                isEmpty = !models_suvs.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_suvs[random.Next(models_suvs.Count)];
+                }
+                break;
+
+            case towtruck_1:
+            case towtruck_2:
+            case towtruck_3:
+            case towtruck_4:
+            case towtruck_5:
+                isEmpty = !models_towtruck.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_towtruck[random.Next(models_towtruck.Count)];
+                }
+                break;
+
+            case tuners_1:
+            case tuners_2:
+            case tuners_3:
+            case tuners_4:
+            case tuners_5:
+                isEmpty = !models_tuners.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_tuners[random.Next(models_tuners.Count)];
+                }
+                break;
+
+            case valentine:
+                isEmpty = !models_valentine.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_valentine[random.Next(models_valentine.Count)];
+                }
+                break;
+
+            case vans_1:
+            case vans_2:
+            case vans_3:
+            case vans_4:
+            case vans_5:
+            case vans_6:
+            case vans_7:
+            case vans_8:
+            case vans_9:
+            case vans_10:
+            case vans_11:
+            case vans_12:
+            case vans_13:
+                isEmpty = !models_vans.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_vans[random.Next(models_vans.Count)];
+                }
+                break;
+
+            case wastelander:
+                isEmpty = !models_wastelander.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_wastelander[random.Next(models_wastelander.Count)];
+                }
+                break;
+
+            case weaponboats:
+                isEmpty = !models_weaponboats.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = models_weaponboats[random.Next(models_weaponboats.Count)];
+                }
+                break;
+        }
+        return model_name;
+    }
+
     void SetNumberPlate(Vehicle car, int mode, int index)
     {
         if (mode == 1)
@@ -1178,58 +1670,28 @@ public class SpawnMP : Script
         }
     }
 
-    Ped CreateDriverInVehicle(Vehicle street_car)
+    public void SetSpawnLocation(Vehicle car, int min, int max)
     {
-        Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_car, true);
-        street_driver.Task.CruiseWithVehicle(street_car, 30.0f, DrivingStyle.Normal);
-        return street_driver;
-    }
+        car.PlaceOnGround(); 
+        float AroundDistance = (float)GetRandomNumber(min, max);
+        car.Position = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(AroundDistance)); 
 
-    Vehicle CreateNewVehicleInTraffic(string model, Vector3 desiredPos)
-    {
-        Nodetype roadtype = Nodetype.Road;
-        bool ForceOffroad = false;
+        while (car.IsOnScreen)
+        {
+            Wait(10);
+            AroundDistance += 5f;
+            car.Position = World.GetNextPositionOnStreet(Game.Player.Character.Position.Around(AroundDistance));
+        }
+
         OutputArgument outArgA = new OutputArgument();
         OutputArgument outArgB = new OutputArgument();
-        int NodeNumber = 1;
-        int type = 0;
 
-        if (roadtype == Nodetype.AnyRoad)
+        if (Function.Call<bool>(Hash.GET_CLOSEST_VEHICLE_NODE_WITH_HEADING, car.Position.X, car.Position.Y, car.Position.Z, outArgA, outArgB, 1, 1077936128, 0))
         {
-            type = 1;
-        }
-        if (roadtype == Nodetype.Road)
-        {
-            type = 0;
-        }
-        if (roadtype == Nodetype.Offroad)
-        {
-            type = 1;
-            ForceOffroad = true;
-        }
-        if (roadtype == Nodetype.Water)
-        {
-            type = 3;
+            car.Heading = outArgB.GetResult<float>();
         }
 
-        int NodeID = Function.Call<int>(Hash.GET_NTH_CLOSEST_VEHICLE_NODE_ID_WITH_HEADING, desiredPos.X, desiredPos.Y, desiredPos.Z, NodeNumber, outArgA, outArgB, type, 300f, 300f);
-        if (ForceOffroad)
-        {
-            while (!Function.Call<bool>(Hash.GET_VEHICLE_NODE_IS_SWITCHED_OFF, NodeID) && NodeNumber < 500)
-            {
-                NodeNumber++;
-                NodeID = Function.Call<int>(Hash.GET_NTH_CLOSEST_VEHICLE_NODE_ID_WITH_HEADING, desiredPos.X, desiredPos.Y, desiredPos.Z, NodeNumber, outArgA, outArgB, type, 300f, 300f);
-            }
-        }
-
-        Function.Call(Hash.GET_VEHICLE_NODE_POSITION, NodeID, outArgA);
-        Vector3 street_coords = outArgA.GetResult<Vector3>();
-        float street_angle = outArgB.GetResult<float>();
-        var veh_model = new Model(model);
-        veh_model.Request(500);
-        while (!veh_model.IsLoaded) Script.Wait(100);
-        Vehicle street_car = World.CreateVehicle(veh_model, street_coords, street_angle);
-        return street_car;
+        car.IsVisible = true;
     }
 
     Vehicle CreateNewVehicle(string hash, Vector3 pos, float heading)
@@ -1260,6 +1722,70 @@ public class SpawnMP : Script
         return mark;
     }
 
+    private int GetRandomNumber(int min, int max)
+    {
+        var random = new Random();
+        if (max <= 1)
+            return 0;
+
+        try
+        {
+            return random.Next(0, max);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    bool IsIndexCanSpawned(int type)
+    {
+        int[] veh_types = {
+            arena,
+            boats,
+            cemetery,
+            cinema,
+            helicopter,
+            humanlabs,
+            vetir,
+            scarab,
+            terrorbyte,
+            thruster,
+            khanjari,
+            chernobog,
+            barrage,
+            trailerLarge,
+            halfTrack,
+            apc,
+            trailerSmall2,
+            military_planes_1,
+            military_planes_2,
+            military_helicopters,
+            military_opressors,
+            military_bikes,
+            raiju,
+            streamer216,
+            conada2,
+            openwheel,
+            beach,
+            slawmantruck,
+            submarine,
+            valentine,
+            wastelander,
+            weaponboats,
+        };
+        bool notInArray = true;
+
+        for (int i = 0; i < veh_types.Length && notInArray; i++)
+        {
+            if (type == veh_types[i])
+            {
+                notInArray = false;
+            }
+        }
+        return notInArray;
+    }
+
     void OnAborded(object sender, EventArgs e)
     {
         foreach (Blip mark in marker)
@@ -1277,761 +1803,39 @@ public class SpawnMP : Script
 
     void OnTick(object sender, EventArgs e)
     {
-        int index_db;
-        var random = new Random();
-
-        index_db = 0;
-        //Create Vehicle
+        int index_db = 0;
         foreach (Vector3 veh_coords in coords)
         {
             var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
             if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, veh_coords.X, veh_coords.Y, veh_coords.Z, position.X, position.Y, position.Z, 0) < 300)
             {
-                bool isEmpty;
-                switch (index_db)
+                //spawn in parking lots
+                string model_name = GenerateVehicleModelName(index_db, 0);
+                if (model_name != null)
                 {
-                    case arena:
-                        isEmpty = !models_arena.Any();
-                        if (veh[index_db] == null && !isEmpty)
+                    veh[index_db] = CreateNewVehicle(model_name, coords[index_db], heading[index_db]);
+                    if (veh[index_db] != null)
+                    {
+                        if (blip_config == 1)
                         {
-                            veh[index_db] = CreateNewVehicle(models_arena[random.Next(models_arena.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                SetNumberPlate(veh[index_db], mod_plate, 10);
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-
+                            Blip mark = CreateMarkerAboveCar(veh[index_db]);
+                            marker.Add(mark);
                         }
-                        break;
+                    }
+                }
 
-                    case boats:
-                        isEmpty = !models_boats.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_boats[random.Next(models_boats.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case cemetery:
-                        isEmpty = !models_cemetery.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_cemetery[random.Next(models_cemetery.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case cheburek:
-                        isEmpty = !models_cheburek.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_cheburek[random.Next(models_cheburek.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                SetNumberPlate(veh[index_db], mod_plate, 8);
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case cinema:
-                        isEmpty = !models_cinema.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_cinema[random.Next(models_cinema.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                SetNumberPlate(veh[index_db], mod_plate, 12);
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case cluckin:
-                        isEmpty = !models_cluckin.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_cluckin[random.Next(models_cluckin.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case compacts_1:
-                    case compacts_2:
-                    case compacts_3:
-                    case compacts_4:
-                    case compacts_5:
-                    case compacts_6:
-                        isEmpty = !models_compacts.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_compacts[random.Next(models_compacts.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case coupes_1:
-                    case coupes_2:
-                    case coupes_3:
-                    case coupes_4:
-                    case coupes_5:
-                    case coupes_6:
-                    case coupes_7:
-                        isEmpty = !models_coupes.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_coupes[random.Next(models_coupes.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case cycles_1:
-                    case cycles_2:
-                    case cycles_3:
-                    case cycles_4:
-                    case cycles_5:
-                        isEmpty = !models_cycles.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_cycles[random.Next(models_cycles.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case ghetto_1:
-                    case ghetto_2:
-                    case ghetto_3:
-                    case ghetto_4:
-                    case ghetto_5:
-                        isEmpty = !models_ghetto.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_ghetto[random.Next(models_ghetto.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case helicopter:
-                        isEmpty = !models_helicopter.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_helicopter[random.Next(models_helicopter.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case humanlabs:
-                        isEmpty = !models_helicopter.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_humanlabs[random.Next(models_humanlabs.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case industrial_1:
-                    case industrial_2:
-                    case industrial_3:
-                    case industrial_4:
-                        isEmpty = !models_industrial.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_industrial[random.Next(models_industrial.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case karting:
-                        isEmpty = !models_karting.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_karting[random.Next(models_karting.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case vetir:
-                        if (veh[index_db] == null && vetir_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(vetir_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case scarab:
-                        if (veh[index_db] == null && scarab_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(scarab_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case terrorbyte:
-                        if (veh[index_db] == null && terrorbyte_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(terrorbyte_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case thruster:
-                        if (veh[index_db] == null && thruster_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(thruster_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case khanjari:
-                        if (veh[index_db] == null && khanjari_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(khanjari_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case chernobog:
-                        if (veh[index_db] == null && chernobog_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(chernobog_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case barrage:
-                        if (veh[index_db] == null && barrage_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(barrage_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case trailerLarge:
-                        if (veh[index_db] == null && trailerLarge_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(trailerLarge_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case halfTrack:
-                        if (veh[index_db] == null && halfTrack_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(halfTrack_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case apc:
-                        if (veh[index_db] == null && apc_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(apc_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case trailerSmall2:
-                        if (veh[index_db] == null && trailerSmall2_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(trailerSmall2_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case military_planes_1:
-                    case military_planes_2:
-                        isEmpty = !models_military_planes.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_military_planes[random.Next(models_military_planes.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case military_helicopters:
-                        isEmpty = !models_military_helicopters.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_military_helicopters[random.Next(models_military_helicopters.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case military_opressors:
-                        isEmpty = !models_military_opressors.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_military_opressors[random.Next(models_military_opressors.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case military_bikes:
-                        isEmpty = !models_military_bikes.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_military_bikes[random.Next(models_military_bikes.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case raiju:
-                        if (veh[index_db] == null && raiju_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(raiju_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case streamer216:
-                        if (veh[index_db] == null && streamer216_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(streamer216_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case conada2:
-                        if (veh[index_db] == null && conada2_model != "Blocked")
-                        {
-                            veh[index_db] = CreateNewVehicle(conada2_model, coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case motorcycles_1:
-                    case motorcycles_2:
-                    case motorcycles_3:
-                    case motorcycles_4:
-                    case motorcycles_5:
-                    case motorcycles_6:
-                        isEmpty = !models_motorcycles.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_motorcycles[random.Next(models_motorcycles.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case muscle_1:
-                    case muscle_2:
-                    case muscle_3:
-                    case muscle_4:
-                    case muscle_5:
-                    case muscle_6:
-                    case muscle_7:
-                        isEmpty = !models_muscle.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_muscle[random.Next(models_muscle.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case offroad_1:
-                    case offroad_2:
-                    case offroad_3:
-                    case offroad_4:
-                        isEmpty = !models_offroad.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_offroad[random.Next(models_offroad.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case openwheel:
-                        isEmpty = !models_openwheel.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_openwheel[random.Next(models_openwheel.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case beach:
-                        isEmpty = !models_beach.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_beach[random.Next(models_beach.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case planes:
-                        isEmpty = !models_planes.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_planes[random.Next(models_planes.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case police_1:
-                    case police_2:
-                    case police_3:
-                    case police_4:
-                    case police_5:
-                        isEmpty = !models_police.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_police[random.Next(models_police.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case sedans_1:
-                    case sedans_2:
-                    case sedans_3:
-                    case sedans_4:
-                    case sedans_5:
-                    case sedans_6:
-                    case sedans_7:
-                        isEmpty = !models_sedans.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_sedans[random.Next(models_sedans.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case slawmantruck:
-                        isEmpty = !models_slawmantruck.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_slawmantruck[random.Next(models_slawmantruck.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case sportclassic_1:
-                    case sportclassic_2:
-                    case sportclassic_3:
-                    case sportclassic_4:
-                    case sportclassic_5:
-                    case sportclassic_6:
-                    case sportclassic_7:
-                    case sportclassic_8:
-                        isEmpty = !models_sportclassic.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_sportclassic[random.Next(models_sportclassic.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                SetNumberPlate(veh[index_db], mod_plate, 7);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case submarine:
-                        isEmpty = !models_submarine.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_submarine[random.Next(models_submarine.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case supers_1:
-                    case supers_2:
-                    case supers_3:
-                    case supers_4:
-                    case supers_5:
-                    case supers_6:
-                    case supers_7:
-                        isEmpty = !models_supers.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_supers[random.Next(models_supers.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                SetNumberPlate(veh[index_db], mod_plate, 7);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case suvs_1:
-                    case suvs_2:
-                    case suvs_3:
-                    case suvs_4:
-                    case suvs_5:
-                    case suvs_6:
-                    case suvs_7:
-                    case suvs_8:
-                        isEmpty = !models_suvs.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_suvs[random.Next(models_suvs.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case towtruck_1:
-                    case towtruck_2:
-                    case towtruck_3:
-                    case towtruck_4:
-                    case towtruck_5:
-                        isEmpty = !models_towtruck.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_towtruck[random.Next(models_towtruck.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case tuners_1:
-                    case tuners_2:
-                    case tuners_3:
-                    case tuners_4:
-                    case tuners_5:
-                        isEmpty = !models_tuners.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_tuners[random.Next(models_tuners.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                SetNumberPlate(veh[index_db], mod_plate, 9);
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case valentine:
-                        isEmpty = !models_valentine.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_valentine[random.Next(models_valentine.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case vans_1:
-                    case vans_2:
-                    case vans_3:
-                    case vans_4:
-                    case vans_5:
-                    case vans_6:
-                    case vans_7:
-                    case vans_8:
-                    case vans_9:
-                    case vans_10:
-                    case vans_11:
-                    case vans_12:
-                    case vans_13:
-                        isEmpty = !models_vans.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_vans[random.Next(models_vans.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case wastelander:
-                        isEmpty = !models_wastelander.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_wastelander[random.Next(models_wastelander.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
-
-                    case weaponboats:
-                        isEmpty = !models_weaponboats.Any();
-                        if (veh[index_db] == null && !isEmpty)
-                        {
-                            veh[index_db] = CreateNewVehicle(models_weaponboats[random.Next(models_weaponboats.Count)], coords[index_db], heading[index_db]);
-                            if (veh[index_db] != null)
-                            {
-                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                                marker.Add(mark);
-                            }
-                        }
-                        break;
+                //spawn in traffic
+                if ((Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
+                {
+                    model_name = GenerateVehicleModelName(index_db, 1);
+                    street_veh[index_db] = CreateNewVehicle(model_name, Vector3.Zero, 0.0f);
+                    street_veh[index_db].IsVisible = false;
+                    Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_veh[index_db], true);
+                    street_driver.AlwaysKeepTask = true;
+                    SetSpawnLocation(street_veh[index_db], 50, 300);
+                    street_veh[index_db].Speed = 10.0f;
+                    street_driver.MarkAsNoLongerNeeded();
+                    cooldown = Game.GameTime;
                 }
             }
             index_db++;
@@ -2050,8 +1854,28 @@ public class SpawnMP : Script
             }
             index_db++;
         }
+        index_db = 0;
+        foreach (Vehicle car in street_veh)
+        {
+            if (car != null && car.Exists() && Function.Call<bool>(Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false))
+            {
+                car.MarkAsNoLongerNeeded();
+                street_veh[index_db] = null;
+            }
+            index_db++;
+        }
 
         //Delete Vehicle
+        index_db = 0;
+        foreach (Vehicle car in street_veh)
+        {
+            if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false) && Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, car.Position.X, car.Position.Y, car.Position.Z, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0) > 400)
+            {
+                car.Delete();
+                street_veh[index_db] = null;
+            }
+            index_db++;
+        }
         index_db = 0;
         foreach (Vector3 veh_coords in coords)
         {
