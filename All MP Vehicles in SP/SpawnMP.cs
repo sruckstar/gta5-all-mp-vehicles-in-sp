@@ -16,6 +16,8 @@ public class SpawnMP : Script
     ScriptSettings config;
     private int doors_config = 0;
     private int blip_config = 0;
+    private int[] mode_type = new int[5];
+    private int traffic_blip_config = 0;
     private int x = 0;
     private float[] angle = new float[1];
     private GTA.Vehicle car;
@@ -24,9 +26,11 @@ public class SpawnMP : Script
     private int street_blip;
     private int mod_plate;
     private int cooldown = 0;
+    private int plate_id = -1;
     private Vehicle[] veh = new Vehicle[200];
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
+    Blip traffic_marker;
 
     //Coords
     private const int arena = 0;
@@ -1029,9 +1033,9 @@ public class SpawnMP : Script
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", 1);
         blip_config = config.GetValue<int>("MAIN", "blips", 1);
+        traffic_blip_config = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
         tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
-        street_blip = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
         mod_plate = config.GetValue<int>("MAIN", "new_license_plates", 0);
 
         char symbol = '#';
@@ -1183,6 +1187,7 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = models_arena[random.Next(models_arena.Count)];
+                    plate_id = 10;
                 }
                 break;
 
@@ -1207,6 +1212,7 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = models_cheburek[random.Next(models_cheburek.Count)];
+                    plate_id = 8;
                 }
                 break;
 
@@ -1215,6 +1221,7 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = models_cinema[random.Next(models_cinema.Count)];
+                    plate_id = 6;
                 }
                 break;
 
@@ -1223,6 +1230,7 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = models_cluckin[random.Next(models_cluckin.Count)];
+                    plate_id = 6;
                 }
                 break;
 
@@ -1551,6 +1559,7 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = models_sportclassic[random.Next(models_sportclassic.Count)];
+                    plate_id = 7;
                 }
                 break;
 
@@ -1664,7 +1673,7 @@ public class SpawnMP : Script
 
     void SetNumberPlate(Vehicle car, int mode, int index)
     {
-        if (mode == 1)
+        if (mode == 1 && plate_id != -1)
         {
             Function.Call(Hash.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX, car, index);
         }
@@ -1692,6 +1701,7 @@ public class SpawnMP : Script
         }
 
         car.IsVisible = true;
+        car.IsCollisionEnabled = true;
     }
 
     Vehicle CreateNewVehicle(string hash, Vector3 pos, float heading)
@@ -1707,6 +1717,61 @@ public class SpawnMP : Script
         {
             while (!veh_model.IsLoaded) Script.Wait(100);
             car = World.CreateVehicle(veh_model, pos, heading);
+
+            if (doors_config == 1)
+            {
+                GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
+
+            }
+
+            if (tuning_flag == 1)
+            {
+                Random rnd = new Random();
+                int num;
+                int modindex;
+                for (int a = 0; a <= 3; a++)
+                {
+                    mode_type[a] = rnd.Next(0, 17);
+                    num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
+                    if (num != -1)
+                    {
+                        modindex = rnd.Next(0, num + 1);
+                        Function.Call(Hash.SET_VEHICLE_MOD, car, mode_type[a], modindex, true);
+                    }
+                }
+                if (Function.Call<bool>(Hash.IS_THIS_MODEL_A_BIKE, veh_model))
+                {
+                    num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 24);
+                    modindex = rnd.Next(0, num + 1);
+                    Function.Call(Hash.SET_VEHICLE_MOD, car, 24, modindex, true);
+                }
+                else
+                {
+                    num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 23);
+                    modindex = rnd.Next(0, num + 1);
+                    Function.Call(Hash.SET_VEHICLE_MOD, car, 23, modindex, true);
+                }
+                int choose = rnd.Next(1, 3);
+                if (choose == 1)
+                {
+                    num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 48);
+                    if (num != -1)
+                    {
+                        modindex = rnd.Next(0, num + 1);
+                        Function.Call(Hash.SET_VEHICLE_MOD, car, 48, modindex, true);
+                    }
+                }
+                else
+                {
+                    modindex = rnd.Next(0, 7);
+                    num = Function.Call<int>(Hash.GET_NUM_MOD_COLORS, 6, true);
+                    int color_1 = rnd.Next(0, num + 1);
+                    int color_2 = rnd.Next(0, num + 1);
+                    Function.Call(Hash.SET_VEHICLE_MOD_COLOR_1, car, modindex, color_1, 0);
+                    Function.Call(Hash.SET_VEHICLE_MOD_COLOR_2, car, modindex, color_2, 0);
+                }
+            }
+
             return car;
         }
 
@@ -1816,6 +1881,8 @@ public class SpawnMP : Script
                     veh[index_db] = CreateNewVehicle(model_name, coords[index_db], heading[index_db]);
                     if (veh[index_db] != null)
                     {
+                        SetNumberPlate(veh[index_db], mod_plate, plate_id);
+                        plate_id = -1;
                         if (blip_config == 1)
                         {
                             Blip mark = CreateMarkerAboveCar(veh[index_db]);
@@ -1825,15 +1892,27 @@ public class SpawnMP : Script
                 }
 
                 //spawn in traffic
-                if ((Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
+                if (street_flag == 1 && (Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
                 {
+                    if (traffic_marker != null && traffic_marker.Exists())
+                    {
+                        traffic_marker.Delete();
+                    }
+
                     model_name = GenerateVehicleModelName(index_db, 1);
                     street_veh[index_db] = CreateNewVehicle(model_name, Vector3.Zero, 0.0f);
                     street_veh[index_db].IsVisible = false;
+                    street_veh[index_db].IsCollisionEnabled = false;
                     Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_veh[index_db], true);
                     street_driver.AlwaysKeepTask = true;
                     SetSpawnLocation(street_veh[index_db], 50, 300);
                     street_veh[index_db].Speed = 10.0f;
+
+                    if (traffic_blip_config == 1)
+                    {
+                        traffic_marker = CreateMarkerAboveCar(street_veh[index_db]);
+                    }
+
                     street_driver.MarkAsNoLongerNeeded();
                     cooldown = Game.GameTime;
                 }
