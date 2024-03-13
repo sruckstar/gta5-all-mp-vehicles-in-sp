@@ -18,12 +18,11 @@ public class SpawnMP : Script
     private int blip_config = 0;
     private int[] mode_type = new int[5];
     private int traffic_blip_config = 0;
-    private int x = 0;
     private float[] angle = new float[1];
     private GTA.Vehicle car;
     private int tuning_flag;
     private int street_flag;
-    private int street_blip;
+    private int blip_color;
     private int mod_plate;
     private int cooldown = 0;
     private int plate_id = -1;
@@ -1037,6 +1036,7 @@ public class SpawnMP : Script
         tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         mod_plate = config.GetValue<int>("MAIN", "new_license_plates", 0);
+        blip_color = config.GetValue<int>("MAIN", "blip_color", 3);
 
         char symbol = '#';
         string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
@@ -1781,7 +1781,7 @@ public class SpawnMP : Script
     {
         Blip mark = Function.Call<Blip>(GTA.Native.Hash.ADD_BLIP_FOR_ENTITY, car);
         Function.Call(GTA.Native.Hash.SET_BLIP_SPRITE, mark, 1);
-        Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, mark, 3);
+        Function.Call(GTA.Native.Hash.SET_BLIP_COLOUR, mark, blip_color);
         Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
         mark.Name = "Unique vehicle";
         return mark;
