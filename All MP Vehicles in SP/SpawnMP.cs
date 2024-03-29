@@ -177,8 +177,6 @@ public class SpawnMP : Script
 
     private int debug_releport = arena;
 
-    int i = 0;
-    char symbol = '#';
     string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
     List<string> blacklist_str = new List<string>();
 
@@ -427,7 +425,7 @@ public class SpawnMP : Script
     "buccaneer2",
     "coquette3",
     "chino",
-    "vigero",
+    "vig  ero",
     "slamVan2",
     "clique2",
     "buffalo5",
@@ -1907,13 +1905,13 @@ public class SpawnMP : Script
                     street_driver.AlwaysKeepTask = true;
                     SetSpawnLocation(street_veh[index_db], 50, 300);
                     street_veh[index_db].Speed = 10.0f;
+                    street_driver.IsVisible = true;
 
                     if (traffic_blip_config == 1)
                     {
                         traffic_marker = CreateMarkerAboveCar(street_veh[index_db]);
                     }
 
-                    street_driver.MarkAsNoLongerNeeded();
                     cooldown = Game.GameTime;
                 }
             }
