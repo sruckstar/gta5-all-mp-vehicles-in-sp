@@ -177,10 +177,7 @@ public class SpawnMP : Script
 
     private int debug_releport = arena;
 
-    string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
-    List<string> blacklist_str = new List<string>();
-
-    private List<string> models_arena = new List<string>() {
+private List<string> models_arena = new List<string>() {
     "boxville5",
     "zr380",
     "cerberus",
@@ -1038,12 +1035,26 @@ public class SpawnMP : Script
 
         char symbol = '#';
         string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
+        string[] lines_addon = File.ReadAllLines("Scripts\\NewVehiclesList.txt");
         List<string> blacklist_str = new List<string>();
+        List<string> new_list_str = new List<string>();
 
         foreach (string s in lines)
         {
             if (s.IndexOf(symbol) == -1)
                 blacklist_str.Add(s);
+        }
+
+        foreach (string s in lines_addon)
+        {
+            if (s.IndexOf(symbol) == -1 && s.Length > 0)
+                new_list_str.Add(s);
+        }
+
+        foreach (string line in lines_addon)
+        {
+            string[] veh_data = line.Split(',');
+            AddCustomVehicle(veh_data[0], veh_data[1]);
         }
 
         foreach (string hash in blacklist_str)
@@ -1160,6 +1171,8 @@ public class SpawnMP : Script
                 models_weaponboats.Remove(hash);
         }
 
+       
+
         Tick += OnTick;
         Aborted += OnAborded;
     }
@@ -1170,6 +1183,96 @@ public class SpawnMP : Script
         Road,
         Offroad,
         Water
+    }
+
+    void AddCustomVehicle(string Model, string Class)
+    {
+        switch(Class)
+        {
+            case "boats":
+                models_boats.Add(Model);
+                break;
+
+            case "commercial":
+                models_industrial.Add(Model);
+                break;
+
+            case "compacts":
+                models_compacts.Add(Model);
+                break;
+
+            case "coupes":
+                models_coupes.Add(Model);
+                break;
+
+            case "cycles":
+                models_cycles.Add(Model);
+                break;
+
+            case "emergency":
+                models_industrial.Add(Model);
+                break;
+
+            case "helicopters":
+                models_helicopter.Add(Model);
+                break;
+
+            case "industrial":
+                models_industrial.Add(Model);
+                break;
+
+            case "karting":
+                models_karting.Add(Model);
+                break;
+
+            case "motorcycles":
+                models_motorcycles.Add(Model);
+                break;
+
+            case "muscle":
+                models_muscle.Add(Model);
+                break;
+
+            case "openwheel":
+                models_openwheel.Add(Model);
+                break;
+
+            case "offroad":
+                models_offroad.Add(Model);
+                break;
+
+            case "planes":
+                models_planes.Add(Model);
+                break;
+
+            case "sedans":
+                models_sedans.Add(Model);
+                break;
+
+            case "service":
+                models_industrial.Add(Model);
+                break;
+
+            case "sports":
+                models_sportclassic.Add(Model);
+                break;
+
+            case "sportsclassics":
+                models_sportclassic.Add(Model);
+                break;
+
+            case "super":
+                models_supers.Add(Model);
+                break;
+
+            case "suvs":
+                models_suvs.Add(Model);
+                break;
+
+            case "vans":
+                models_vans.Add(Model);
+                break;
+        }
     }
 
     string GenerateVehicleModelName(int index_db, int type)
