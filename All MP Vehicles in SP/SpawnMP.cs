@@ -1994,55 +1994,60 @@ private List<string> models_arena = new List<string>() {
     void OnTick(object sender, EventArgs e)
     {
         int index_db = 0;
-        foreach (Vector3 veh_coords in coords)
+
+        //Create vehicles (ON_MISSION = 0)
+        if (!Function.Call<bool>(Hash.GET_MISSION_FLAG))
         {
-            var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
-            if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, veh_coords.X, veh_coords.Y, veh_coords.Z, position.X, position.Y, position.Z, 0) < 300)
+            foreach (Vector3 veh_coords in coords)
             {
-                //spawn in parking lots
-                string model_name = GenerateVehicleModelName(index_db, 0);
-                if (model_name != null)
+                var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 0, 0));
+                if (Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, veh_coords.X, veh_coords.Y, veh_coords.Z, position.X, position.Y, position.Z, 0) < 300)
                 {
-                    veh[index_db] = CreateNewVehicle(model_name, coords[index_db], heading[index_db]);
-                    if (veh[index_db] != null)
+                    //spawn in parking lots
+                    string model_name = GenerateVehicleModelName(index_db, 0);
+                    if (model_name != null)
                     {
-                        SetNumberPlate(veh[index_db], mod_plate, plate_id);
-                        plate_id = -1;
-                        if (blip_config == 1)
+                        veh[index_db] = CreateNewVehicle(model_name, coords[index_db], heading[index_db]);
+                        if (veh[index_db] != null)
                         {
-                            Blip mark = CreateMarkerAboveCar(veh[index_db]);
-                            marker.Add(mark);
+                            SetNumberPlate(veh[index_db], mod_plate, plate_id);
+                            plate_id = -1;
+                            if (blip_config == 1)
+                            {
+                                Blip mark = CreateMarkerAboveCar(veh[index_db]);
+                                marker.Add(mark);
+                            }
                         }
                     }
-                }
 
-                //spawn in traffic
-                if (street_flag == 1 && (Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
-                {
-                    if (traffic_marker != null && traffic_marker.Exists())
+                    //spawn in traffic
+                    if (street_flag == 1 && (Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
                     {
-                        traffic_marker.Delete();
+                        if (traffic_marker != null && traffic_marker.Exists())
+                        {
+                            traffic_marker.Delete();
+                        }
+
+                        model_name = GenerateVehicleModelName(index_db, 1);
+                        street_veh[index_db] = CreateNewVehicle(model_name, Vector3.Zero, 0.0f);
+                        street_veh[index_db].IsVisible = false;
+                        street_veh[index_db].IsCollisionEnabled = false;
+                        Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_veh[index_db], true);
+                        street_driver.AlwaysKeepTask = true;
+                        SetSpawnLocation(street_veh[index_db], 50, 300);
+                        street_veh[index_db].Speed = 10.0f;
+                        street_driver.IsVisible = true;
+
+                        if (traffic_blip_config == 1)
+                        {
+                            traffic_marker = CreateMarkerAboveCar(street_veh[index_db]);
+                        }
+
+                        cooldown = Game.GameTime;
                     }
-
-                    model_name = GenerateVehicleModelName(index_db, 1);
-                    street_veh[index_db] = CreateNewVehicle(model_name, Vector3.Zero, 0.0f);
-                    street_veh[index_db].IsVisible = false;
-                    street_veh[index_db].IsCollisionEnabled = false;
-                    Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_veh[index_db], true);
-                    street_driver.AlwaysKeepTask = true;
-                    SetSpawnLocation(street_veh[index_db], 50, 300);
-                    street_veh[index_db].Speed = 10.0f;
-                    street_driver.IsVisible = true;
-
-                    if (traffic_blip_config == 1)
-                    {
-                        traffic_marker = CreateMarkerAboveCar(street_veh[index_db]);
-                    }
-
-                    cooldown = Game.GameTime;
                 }
+                index_db++;
             }
-            index_db++;
         }
 
         //Player in car
@@ -2069,17 +2074,27 @@ private List<string> models_arena = new List<string>() {
             index_db++;
         }
 
-        //Delete Vehicle
+        //Delete Street Vehicles
         index_db = 0;
         foreach (Vehicle car in street_veh)
         {
-            if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false) && Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, car.Position.X, car.Position.Y, car.Position.Z, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0) > 400)
+
+            if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false) && Function.Call<bool>(Hash.GET_MISSION_FLAG))
             {
                 car.Delete();
                 street_veh[index_db] = null;
             }
+            else
+            {
+                if (car != null && car.Exists() && !Function.Call<bool>(Hash.IS_PED_IN_VEHICLE, Game.Player.Character, car, false) && Function.Call<float>(Hash.GET_DISTANCE_BETWEEN_COORDS, car.Position.X, car.Position.Y, car.Position.Z, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z, 0) > 400)
+                {
+                    car.Delete();
+                    street_veh[index_db] = null;
+                }
+            }
             index_db++;
         }
+
         index_db = 0;
         foreach (Vector3 veh_coords in coords)
         {
