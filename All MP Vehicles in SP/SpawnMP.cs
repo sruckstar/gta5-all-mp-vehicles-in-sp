@@ -422,7 +422,7 @@ private List<string> models_arena = new List<string>() {
     "buccaneer2",
     "coquette3",
     "chino",
-    "vig  ero",
+    "vigero",
     "slamVan2",
     "clique2",
     "buffalo5",
@@ -1048,15 +1048,24 @@ private List<string> models_arena = new List<string>() {
         foreach (string s in lines_addon)
         {
             if (s.IndexOf(symbol) == -1 && s.Length > 0)
+            {
                 new_list_str.Add(s);
+            }
         }
 
-        foreach (string line in lines_addon)
+        foreach (string line in new_list_str)
         {
             string[] veh_data = line.Split(',');
-            AddCustomVehicle(veh_data[0], veh_data[1]);
+            try
+            {
+                AddCustomVehicle(veh_data[0], veh_data[1]);
+            }
+            catch
+            {
+                GTA.UI.Notification.Show("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.");
+            }
         }
-
+        
         foreach (string hash in blacklist_str)
         {
             if (models_arena.Contains(hash))
@@ -1174,6 +1183,7 @@ private List<string> models_arena = new List<string>() {
        
 
         Tick += OnTick;
+        KeyUp += onkeyup;
         Aborted += OnAborded;
     }
 
@@ -1911,6 +1921,12 @@ private List<string> models_arena = new List<string>() {
             boats,
             cemetery,
             cinema,
+            cluckin,
+            cycles_1,
+            cycles_2,
+            cycles_3,
+            cycles_4,
+            cycles_5,
             helicopter,
             humanlabs,
             vetir,
@@ -1918,6 +1934,7 @@ private List<string> models_arena = new List<string>() {
             terrorbyte,
             thruster,
             khanjari,
+            karting,
             chernobog,
             barrage,
             trailerLarge,
@@ -1929,11 +1946,18 @@ private List<string> models_arena = new List<string>() {
             military_helicopters,
             military_opressors,
             military_bikes,
+            openwheel,
             raiju,
             streamer216,
             conada2,
             openwheel,
             beach,
+            planes,
+            towtruck_1,
+            towtruck_2,
+            towtruck_3,
+            towtruck_4,
+            towtruck_5,
             slawmantruck,
             submarine,
             valentine,
@@ -2079,14 +2103,17 @@ private List<string> models_arena = new List<string>() {
     {
         if (e.KeyCode == Keys.N)
         {
-            Game.Player.Character.Position = coords[debug_releport];
-            if (coords.Count - 1 > debug_releport)
+            var veh_model = new Model("gstghell1");
+            veh_model.Request(500);
+            if (!veh_model.IsValid)
             {
-                debug_releport++;
+                GTA.UI.Notification.Show("gstghell1 is invalid model! Please add this model to mp_blacklist.txt");
             }
             else
             {
-                debug_releport = 0;
+                var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 5, 0));
+                var heading = Game.Player.Character.Heading - 90;
+                var vehicle = World.CreateVehicle(veh_model, position, heading);
             }
         }
     }
