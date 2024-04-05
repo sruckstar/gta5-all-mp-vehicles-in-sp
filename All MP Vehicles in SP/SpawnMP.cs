@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2021,7 +2021,7 @@ private List<string> models_arena = new List<string>() {
                     }
 
                     //spawn in traffic
-                    if (street_flag == 1 && (Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db))
+                    if (street_flag == 1 && (Game.GameTime > cooldown + 10000 || cooldown == 0) && IsIndexCanSpawned(index_db)) 
                     {
                         if (traffic_marker != null && traffic_marker.Exists())
                         {
@@ -2034,8 +2034,17 @@ private List<string> models_arena = new List<string>() {
                         street_veh[index_db].IsCollisionEnabled = false;
                         Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, street_veh[index_db], true);
                         street_driver.AlwaysKeepTask = true;
+                        street_driver.DrivingSpeed = 10.0f;
+
                         SetSpawnLocation(street_veh[index_db], 50, 300);
+
+                        street_veh[index_db].IsEngineRunning = true;
+                        street_driver.Task.CruiseWithVehicle(street_veh[index_db], 10.0f, DrivingStyle.Normal);
+
                         street_veh[index_db].Speed = 10.0f;
+
+                        //Function.Call(Hash.TASK_VEHICLE_DRIVE_WANDER, street_driver, street_veh[index_db], 10.0f, DrivingStyle.Normal);
+
                         street_driver.IsVisible = true;
 
                         if (traffic_blip_config == 1)
