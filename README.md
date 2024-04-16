@@ -14,7 +14,7 @@ Join my Discord server: https://discord.gg/vvxmKP5y5J
 
 1. Download [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
 2. Download [ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet/releases/latest)
-3. Move all files from the archive to the `scripts` folder (if it does not exist, create it).
+3. Move the `scripts` folder into your main GTAV folder (press _Replace the files in the destination_ if Windows asks you to).
 
 # Script Settings
 
