@@ -18,7 +18,7 @@ Join my Discord server: https://discord.gg/vvxmKP5y5J
 
 # Script Settings
 
-You can open the `AllMpVehiclesInSp.ini` file to modify the script settings.
+You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder) to modify the script settings.
 
 0 - disable
 1 - enable
