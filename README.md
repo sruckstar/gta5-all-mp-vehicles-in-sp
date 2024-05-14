@@ -23,6 +23,9 @@ It is mandatory to capitalize the vehicle class as shown in the following exampl
 If the author did not specify which class the add-on vehicle belongs to, choose the class that seems most appropriate to you. 
 This setting does not affect the performance of the car. It is necessary for correct spawning of cars in the following locations.
 
+# Adding cars to the blacklist
+Starting with version 2.0.0 you can add cars to the blacklist. In this case they will not appear in parking lots and traffic. You will still be able to get these cars with a trainer or other mods.
+Open the text file mp_blacklist.txt and add the names of the DLC cars you do not want to see in traffic or parking to the column.
 
 # Installation
 
