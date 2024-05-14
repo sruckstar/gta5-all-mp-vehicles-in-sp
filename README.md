@@ -10,6 +10,20 @@ The mod adds all the vehicles from GTA Online to GTA 5. The new cars can be foun
 
 Join my Discord server: https://discord.gg/vvxmKP5y5J
 
+# Add-On vehicles in traffic and parking lots
+Since version 2.0.5 you can add Add-On vehicles to traffic and parking lots. 
+
+Open the NewVehiclesList.txt file and add a new line:
+SpawnModelName,class
+
+For example: gstghell1,muscle
+
+It is mandatory to capitalize the vehicle class as shown in the following example: boats, commercial, compacts, coupes, cycles, emergency, helicopters, industrial, karting, military, motorcycles, muscle, openwheel, offroad, planes, sedans, service, sports, sportsclassics, super, suvs, vans.
+
+If the author did not specify which class the add-on vehicle belongs to, choose the class that seems most appropriate to you. 
+This setting does not affect the performance of the car. It is necessary for correct spawning of cars in the following locations.
+
+
 # Installation
 
 1. Download [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
