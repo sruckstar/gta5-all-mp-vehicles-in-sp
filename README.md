@@ -45,3 +45,7 @@ You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder)
 - tuning - if enabled, spawned DLC cars will receive random tuning items.
 - spawn_traffic - enable or disable spawning of DLC cars in traffic.
 - traffic_cars_blips - enable or disable blips of DLC cars in traffic.
+- new_license_plates - install unique license plates from the Chop Shop update on cars (may crash the game on earlier versions of the game)
+- blip_color - set the color of car tags in parking lots (values from 0 to 85)
+- blip_color_traffic - set the color of car labels in traffic (values from 0 to 85)
+- time_traffic_gen - the time in milliseconds between cars being spawn in traffic (minimum value is 3000, default is 8000)
