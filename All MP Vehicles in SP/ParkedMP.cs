@@ -14,6 +14,7 @@ using System.IO;
 public class SpawnMP : Script
 {
     ScriptSettings config;
+    int vehicles_spawned;
     private int doors_config = 0;
     private int blip_config = 0;
     private int[] mode_type = new int[5];
@@ -1294,6 +1295,8 @@ public class SpawnMP : Script
                 }
             }
 
+            vehicles_spawned = 1;
+
             return car;
         }
 
@@ -1307,22 +1310,6 @@ public class SpawnMP : Script
         Function.Call(GTA.Native.Hash.FLASH_MINIMAP_DISPLAY);
         mark.Name = "Unique vehicle";
         return mark;
-    }
-
-    private int GetRandomNumber(int min, int max)
-    {
-        var random = new Random();
-        if (max <= 1)
-            return 0;
-
-        try
-        {
-            return random.Next(0, max);
-        }
-        catch
-        {
-            return 0;
-        }
     }
 
     void OnAborded(object sender, EventArgs e)
@@ -1342,6 +1329,21 @@ public class SpawnMP : Script
 
     void OnTick(object sender, EventArgs e)
     {
+
+        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        {
+            foreach (Vehicle car in veh)
+            {
+                if (car.Exists())
+                {
+                    car.Delete();
+                }
+            }
+
+            vehicles_spawned = 0;
+        }
+
+
         int index_db = 0;
 
         //Create vehicles (ON_MISSION = 0)

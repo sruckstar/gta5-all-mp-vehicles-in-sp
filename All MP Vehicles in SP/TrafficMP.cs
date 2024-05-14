@@ -13,6 +13,7 @@ using System.IO;
 
 public class TrafficMP : Script
 {
+    int vehicles_spawned = 0;
     int lockdown = 0;
     int blip_color;
     int time_traffic_gen;
@@ -164,6 +165,19 @@ public class TrafficMP : Script
 
     private void OnTick(object sender, EventArgs e)
     {
+        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        {
+            foreach (Vehicle car in veh_dlc_list)
+            {
+                if (car.Exists())
+                {
+                    car.Delete();
+                }
+            }
+
+            vehicles_spawned = 0;
+        }
+
         if (street_flag == 1 && !Function.Call<bool>(Hash.GET_MISSION_FLAG))
         {
             if (lockdown == 0 || Game.GameTime > lockdown)
@@ -198,6 +212,8 @@ public class TrafficMP : Script
                 {
                     traffic_blip = CreateMarkerAboveCar(traffic_veh);
                 }
+
+                vehicles_spawned = 1;
 
                 foreach (Vehicle car in veh_dlc_list)
                 {
