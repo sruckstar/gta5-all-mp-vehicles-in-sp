@@ -1,7 +1,7 @@
 # gta5-all-mp-vehicles-in-sp
 The mod adds all the vehicles from GTA Online to GTA 5. The new cars can be found in parking lots throughout Los Santos and Blaine County and on the road in general traffic.
 
-- All content from GTA Online is added, including air and water vehicles, except vehicles from previous updates that are available in Single Player (SP).
+- All content from GTA Online is added, including air and water vehicles, except vehicles from previous updates that are available in Single Player.
 - Over 100 new vehicle spawn points.
 - You may come across a DLC car in traffic. Each class of car can only be found on certain roads and sections of road.
 - Parking lot vehicle spawns are constantly changing.
@@ -16,16 +16,16 @@ Since version 2.0.5 you can add Add-On vehicles to traffic and parking lots.
 Open the NewVehiclesList.txt file and add a new line:
 SpawnModelName,class
 
-For example: gstghell1,muscle
+For example `gstghell1,muscle`
 
-It is mandatory to capitalize the vehicle class as shown in the following example: boats, commercial, compacts, coupes, cycles, emergency, helicopters, industrial, karting, military, motorcycles, muscle, openwheel, offroad, planes, sedans, service, sports, sportsclassics, super, suvs, vans.
+It is mandatory to specify the vehicle class, you can choose from `boats`, `commercial`, `compacts`, `coupes`, `cycles`, `emergency`, `helicopters`, `industrial`, `karting`, `military`, `motorcycles`, `muscle`, `openwheel`, `offroad`, `planes`, `sedans`, `service`, `sports`, `sportsclassics`, `super`, `suvs`, `vans`.
 
 If the author did not specify which class the add-on vehicle belongs to, choose the class that seems most appropriate to you. 
-This setting does not affect the performance of the car. It is necessary for correct spawning of cars in the following locations.
+This setting does not affect the performance of the car. It is necessary for the correct spawning of cars in specific locations.
 
 # Adding cars to the blacklist
-Starting with version 2.0.0 you can add cars to the blacklist. In this case they will not appear in parking lots and traffic. You will still be able to get these cars with a trainer or other mods.
-Open the text file mp_blacklist.txt and add the names of the DLC cars you do not want to see in traffic or parking to the column.
+Starting with version 2.0.0 you can add cars to the blacklist. In this case, they will not appear in parking lots and traffic. You will still be able to get these cars with a trainer or other mods.
+Open the file `mp_blacklist.txt` and add the names of the DLC cars you do not want to see in traffic or parking to the column.
 
 # Installation
 
@@ -40,12 +40,12 @@ You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder)
 0 - disable
 1 - enable
 
-- doors - enable locking the parked DLC vehicle's doors. If enabled, the player will have to break a window or lockpick it (depending on the vehicle) to enter.
-- blips - enable or disable parked DLC car blips on the map.
-- tuning - if enabled, spawned DLC cars will receive random tuning items.
-- spawn_traffic - enable or disable spawning of DLC cars in traffic.
-- traffic_cars_blips - enable or disable blips of DLC cars in traffic.
-- new_license_plates - install unique license plates from the Chop Shop update on cars (may crash the game on earlier versions of the game)
-- blip_color - set the color of car tags in parking lots (values from 0 to 85)
-- blip_color_traffic - set the color of car labels in traffic (values from 0 to 85)
-- time_traffic_gen - the time in milliseconds between cars being spawn in traffic (minimum value is 3000, default is 8000)
+- `doors` - enable locking the parked DLC vehicle's doors. If enabled, the player will have to break a window or lockpick it (depending on the vehicle) to enter.
+- `blips` - enable or disable parked DLC car blips on the map.
+- `tuning` - if enabled, spawned DLC cars will receive random tuning items.
+- `spawn_traffic` - enable or disable spawning of DLC cars in traffic.
+- `traffic_cars_blips` - enable or disable blips of DLC cars in traffic.
+- `new_license_plates` - install unique license plates from the Chop Shop update on cars (may crash the game on earlier versions of the game)
+- `blip_color` - set the color of car tags in parking lots (values from 0 to 85)
+- `blip_color_traffic` - set the color of car labels in traffic (values from 0 to 85)
+- `time_traffic_gen` - the time in milliseconds between cars being spawned in traffic (minimum value is 3000, default is 8000)
