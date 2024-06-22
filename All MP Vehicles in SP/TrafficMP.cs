@@ -23,6 +23,7 @@ public class TrafficMP : Script
     Ped traffic_ped;
     Blip traffic_blip;
     List<Vehicle> veh_dlc_list = new List<Vehicle>();
+    List<Ped> ped_dlc_list = new List<Ped>();
     ScriptSettings config;
 
     public TrafficMP()
@@ -103,13 +104,36 @@ public class TrafficMP : Script
         return model_name;
     }
 
+    private bool IsEmergencyVehicle(Vehicle vehicle)
+    {
+        return vehicle.Model == VehicleHash.Police ||
+               vehicle.Model == VehicleHash.Police2 ||
+               vehicle.Model == VehicleHash.Police3 ||
+               vehicle.Model == VehicleHash.Police4 ||
+               vehicle.Model == VehicleHash.FBI ||
+               vehicle.Model == VehicleHash.FBI2 ||
+               vehicle.Model == VehicleHash.Policeb ||
+               vehicle.Model == VehicleHash.Sheriff ||
+               vehicle.Model == VehicleHash.Sheriff2 ||
+               vehicle.Model == VehicleHash.Lguard ||
+               vehicle.Model == VehicleHash.Ambulance ||
+               vehicle.Model == VehicleHash.FireTruck;
+    }
+
     public Vehicle FindOriginalVehicle()
     {
         Vehicle[] veh_list = World.GetNearbyVehicles(Game.Player.Character, 50.0f);
 
         foreach (Vehicle car in veh_list)
         {
-            if (!car.IsOnScreen && car.Position.DistanceTo(Game.Player.Character.Position) > 30.0f && car.Speed > 0.0)
+            if (!car.IsOnScreen && 
+                !veh_dlc_list.Contains(car) && 
+                !IsEmergencyVehicle(car) && 
+                car.Position.DistanceTo(Game.Player.Character.Position) > 30.0f && 
+                Function.Call<int>(Hash.GET_ENTITY_POPULATION_TYPE, car) != 7 &&
+                car.Driver != null &&
+                Function.Call<bool>(Hash.IS_THIS_MODEL_A_CAR, car.Model.Hash)
+                )
             {
                 return car;
             }
@@ -131,18 +155,45 @@ public class TrafficMP : Script
         if (model.IsInCdImage && model.IsValid)
         {
             veh = World.CreateVehicle(model, pos, heading);
+            while (veh == null) Script.Wait(0);
+            Function.Call(Hash.SET_ENTITY_COLLISION, veh, false, false);
+
+            foreach (Vehicle v in World.GetAllVehicles())
+            {
+                if (v != veh && v.Position.DistanceTo(veh.Position) <= 2.0f)
+                {
+                    Ped p = v.Driver;
+                    v.Delete();
+                    p.Delete();
+
+                }
+            }
+            Function.Call(Hash.SET_ENTITY_COLLISION, veh, true, true);
+
             return veh;
         }
         return null;
     }
 
-    public Ped SetDrive(Vehicle car)
+    public Ped SetDrive(Vehicle car, int ped_hash, int ped_type)
     {
-        Ped street_driver = Function.Call<Ped>(Hash.CREATE_RANDOM_PED_AS_DRIVER, car, true);
-        Function.Call(Hash.SET_VEHICLE_ENGINE_ON, car, true, true, false);
-        street_driver.Task.CruiseWithVehicle(car, 10.0f, DrivingStyle.Normal);
-        car.Speed = 10.0f;
-        return street_driver;
+        var model = new Model(ped_hash);
+        model.Request(250);
+        while (!model.IsLoaded)
+        {
+            Script.Wait(0);
+        }
+
+        if (model.IsInCdImage && model.IsValid)
+        {
+            Ped street_driver = Function.Call<Ped>(Hash.CREATE_PED_INSIDE_VEHICLE, car, ped_type, model, -1, false, true);
+            Function.Call(Hash.SET_VEHICLE_ENGINE_ON, car, true, true, false);
+            street_driver.Task.CruiseWithVehicle(car, 10.0f, DrivingStyle.Normal);
+            car.Speed = 10.0f;
+            return street_driver;
+        }
+
+        return null;
     }
 
     Blip CreateMarkerAboveCar(Vehicle car)
@@ -171,6 +222,11 @@ public class TrafficMP : Script
             {
                 if (car.Exists())
                 {
+                    Ped ped = car.Driver;
+                    if (ped != null && ped.Exists())
+                    {
+                        ped.Delete();
+                    }
                     car.Delete();
                 }
             }
@@ -191,6 +247,9 @@ public class TrafficMP : Script
                 }
                 Vector3 pos = temp_veh.Position;
                 float heading = temp_veh.Heading;
+                Ped driver = temp_veh.Driver;
+                var ped_model = driver.Model.Hash;
+                int type = Function.Call<int>(Hash.GET_PED_TYPE, driver);
 
                 string model_name = SelectRandmDLC(temp_veh);
 
@@ -206,7 +265,8 @@ public class TrafficMP : Script
                     traffic_veh = SpawnVehicle(model_name, pos, heading);
                 }
                 veh_dlc_list.Add(traffic_veh);
-                traffic_ped = SetDrive(traffic_veh);
+                traffic_ped = SetDrive(traffic_veh, ped_model, type);
+                ped_dlc_list.Add(traffic_ped);
 
                 if (traffic_blip_config == 1)
                 {
@@ -215,11 +275,22 @@ public class TrafficMP : Script
 
                 vehicles_spawned = 1;
 
-                foreach (Vehicle car in veh_dlc_list)
+                foreach (Vehicle car in veh_dlc_list.ToArray())
                 {
                     if (car.Exists())
                     {
-                        if (car.Position.DistanceTo(Game.Player.Character.Position) > 150.0f || car.IsSeatFree(VehicleSeat.Driver))
+                        if (car.Driver == Game.Player.Character)
+                        {
+                            veh_dlc_list.Remove(car);
+                        }
+                    }
+                }
+
+                foreach (Vehicle car in veh_dlc_list.ToArray())
+                {
+                    if (car.Exists())
+                    {
+                        if (car.Position.DistanceTo(Game.Player.Character.Position) > 150.0f)
                         {
                             Ped ped = car.Driver;
                             if (ped != null && ped.Exists())
@@ -227,6 +298,19 @@ public class TrafficMP : Script
                                 ped.Delete();
                             }
                             car.Delete();
+                            veh_dlc_list.Remove(car);
+                        }
+                    }
+                }
+
+                foreach (Ped ped in ped_dlc_list.ToArray())
+                {
+                    if (ped.Exists())
+                    {
+                        if (ped.Position.DistanceTo(Game.Player.Character.Position) > 150.0f)
+                        {
+                            ped.Delete();
+                            ped_dlc_list.Remove(ped);
                         }
                     }
                 }
