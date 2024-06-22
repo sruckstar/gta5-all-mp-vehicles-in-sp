@@ -330,6 +330,10 @@ public class VehList
     "police5",
     };
 
+    public static List<string> models_police_traffic = new List<string>() {
+    "polgauntlet",
+    };
+
     public static List<string> models_sedans = new List<string>() {
     "rhinehart",
     "deity",
