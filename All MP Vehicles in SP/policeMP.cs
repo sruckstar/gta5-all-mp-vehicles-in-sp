@@ -8,28 +8,36 @@ using System.Windows.Forms;
 public class ReplacePoliceCars : Script
 {
     private readonly Random _random = new Random();
+    private ScriptSettings config;
+    private int street_flag;
 
     public ReplacePoliceCars()
     {
         Tick += OnTick;
-        Interval = 1000; 
+        Interval = 1000;
+
+        config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
     }
 
     private void OnTick(object sender, EventArgs e)
     {
-        var policeVehicles = World.GetNearbyVehicles(Game.Player.Character.Position, 200f, new Model[] { VehicleHash.Police, VehicleHash.Police2, VehicleHash.Police3, VehicleHash.Police4 });
-
-        foreach (var vehicle in policeVehicles)
+        if (street_flag == 1)
         {
-            if (IsPoliceVehicle(vehicle) && vehicle.Position.DistanceTo(Game.Player.Character.Position) > 100.0f && !vehicle.IsOnScreen)
+            var policeVehicles = World.GetNearbyVehicles(Game.Player.Character.Position, 200f, new Model[] { VehicleHash.Police, VehicleHash.Police2, VehicleHash.Police3, VehicleHash.Police4 });
+
+            foreach (var vehicle in policeVehicles)
             {
-                if (_random.NextDouble() < 0.1)
+                if (IsPoliceVehicle(vehicle) && vehicle.Position.DistanceTo(Game.Player.Character.Position) > 100.0f && !vehicle.IsOnScreen)
                 {
-                    ReplaceVehicle(vehicle, 1);
-                }
-                else
-                {
-                    ReplaceVehicle(vehicle, 0);
+                    if (_random.NextDouble() < 0.1)
+                    {
+                        ReplaceVehicle(vehicle, 1);
+                    }
+                    else
+                    {
+                        ReplaceVehicle(vehicle, 0);
+                    }
                 }
             }
         }
