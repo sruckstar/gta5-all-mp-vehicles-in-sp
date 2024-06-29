@@ -175,6 +175,12 @@ public class SpawnMP : Script
     private const int vans_13 = 135;
     private const int wastelander = 136;
     private const int weaponboats = 137;
+    private const int enforcement_1 = 138;
+    private const int enforcement_2 = 139;
+    private const int enforcement_3 = 140;
+    private const int enforcement_4 = 141;
+    private const int enforcement_5 = 142;
+    private const int pizzaboy = 143;
 
     private int debug_releport = arena;
 
@@ -318,6 +324,13 @@ public class SpawnMP : Script
         new Vector3(-2555.51f, 2322.827f, 32.06f),
         new Vector3(1111.018f, 2221.073f, 50.140f),
         new Vector3(-3092.066f, 3465.729f, -0.474f),
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER boil
+        new Vector3(0f, 0f, 0f), //PLACEHOLDER pizza
 };
 
     private List<float> heading = new List<float>()
@@ -460,6 +473,12 @@ public class SpawnMP : Script
         273.837f,
         273.390f,
         47.552f,
+        0.0f, //PLACEHOLDER boil
+        0.0f, //PLACEHOLDER boil
+        0.0f, //PLACEHOLDER boil
+        0.0f, //PLACEHOLDER boil
+        0.0f, //PLACEHOLDER boil
+        0.0f, //PLACEHOLDER boil
 };
 
     public SpawnMP()
@@ -1213,6 +1232,26 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = VehList.models_weaponboats[random.Next(VehList.models_weaponboats.Count)];
+                }
+                break;
+
+            case enforcement_1:
+            case enforcement_2:
+            case enforcement_3:
+            case enforcement_4:
+            case enforcement_5:
+                isEmpty = !VehList.models_enforcement.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_enforcement[random.Next(VehList.models_enforcement.Count)];
+                }
+                break;
+
+            case pizzaboy:
+                isEmpty = !VehList.models_pizza.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_pizza[random.Next(VehList.models_pizza.Count)];
                 }
                 break;
         }
