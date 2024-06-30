@@ -10,6 +10,7 @@ public class ReplacePoliceCars : Script
     private readonly Random _random = new Random();
     private ScriptSettings config;
     private int street_flag;
+    List<Vehicle> veh_dlc_list = new List<Vehicle>();
 
     public ReplacePoliceCars()
     {
@@ -37,6 +38,43 @@ public class ReplacePoliceCars : Script
                     else
                     {
                         ReplaceVehicle(vehicle, 0);
+                    }
+                }
+
+                foreach (Vehicle car in veh_dlc_list.ToArray())
+                {
+                    if (car.Exists())
+                    {
+                        if (car.Position.DistanceTo(Game.Player.Character.Position) > 150.0f && veh_dlc_list.Contains(car))
+                        {
+                            Ped driver = car.Driver;
+                            Ped[] passangers = car.Passengers;
+
+                            if (driver != null && driver.Exists())
+                            {
+                                driver.Delete();
+                            }
+
+                            foreach (Ped ped in passangers)
+                            {
+                                if (ped != null && ped.Exists())
+                                {
+                                    ped.Delete();
+                                }
+                            }
+
+                            veh_dlc_list.Remove(car);
+                        }    
+
+
+                    }
+                }
+
+                foreach (Vehicle car in veh_dlc_list.ToArray())
+                {
+                    if (car.Driver == Game.Player.Character)
+                    {
+                        veh_dlc_list.Remove(car);
                     }
                 }
             }
@@ -227,5 +265,6 @@ public class ReplacePoliceCars : Script
         oldVehicle.MarkAsNoLongerNeeded();
         oldVehicle.Delete();
         Function.Call(Hash.SET_ENTITY_COLLISION, newVehicle, true, true);
+        veh_dlc_list.Add(newVehicle);
     }
 }
