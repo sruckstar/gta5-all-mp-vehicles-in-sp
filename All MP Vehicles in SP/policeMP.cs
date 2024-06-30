@@ -10,6 +10,7 @@ public class ReplacePoliceCars : Script
     private readonly Random _random = new Random();
     private ScriptSettings config;
     private int street_flag;
+    List<Vehicle> veh_dlc_list = new List<Vehicle>();
 
     public ReplacePoliceCars()
     {
@@ -39,6 +40,45 @@ public class ReplacePoliceCars : Script
                         ReplaceVehicle(vehicle, 0);
                     }
                 }
+
+                foreach (Vehicle car in veh_dlc_list.ToArray())
+                {
+                    if (car.Exists())
+                    {
+                        if (car.Position.DistanceTo(Game.Player.Character.Position) > 150.0f && veh_dlc_list.Contains(car))
+                        {
+                            Ped driver = car.Driver;
+                            Ped[] passangers = car.Passengers;
+
+                            if (driver != null && driver.Exists())
+                            {
+                                driver.Delete();
+                            }
+
+                            foreach (Ped ped in passangers)
+                            {
+                                if (ped != null && ped.Exists())
+                                {
+                                    ped.Delete();
+                                }
+                            }
+
+                            car.Delete();
+                            veh_dlc_list.Remove(car);
+                        }    
+
+
+                    }
+                }
+
+                foreach (Vehicle car in veh_dlc_list.ToArray())
+                {
+                    if (car.Driver == Game.Player.Character)
+                    {
+                        car.MarkAsNoLongerNeeded();
+                        veh_dlc_list.Remove(car);
+                    }
+                }
             }
         }
     }
@@ -63,7 +103,7 @@ public class ReplacePoliceCars : Script
     {
         Random rnd = new Random();
 
-        if (police.Model.Hash == new Model(VehList.models_police_traffic[0]).Hash)
+        if (police.Model.Hash == new Model("police5").Hash)
         {
             string zone = Function.Call<string>(Hash.GET_NAME_OF_ZONE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
 
@@ -126,7 +166,7 @@ public class ReplacePoliceCars : Script
                     break;
             }
         }
-        else if (police.Model.Hash == new Model("police5").Hash)
+        else if (police.Model.Hash == new Model("polgauntlet").Hash || police.Model.Hash == new Model("poldorado").Hash || police.Model.Hash == new Model("polimpaler5").Hash || police.Model.Hash == new Model("polgreenwood").Hash)
         {
             string zone = Function.Call<string>(Hash.GET_NAME_OF_ZONE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
 
@@ -227,5 +267,6 @@ public class ReplacePoliceCars : Script
         oldVehicle.MarkAsNoLongerNeeded();
         oldVehicle.Delete();
         Function.Call(Hash.SET_ENTITY_COLLISION, newVehicle, true, true);
+        veh_dlc_list.Add(newVehicle);
     }
 }

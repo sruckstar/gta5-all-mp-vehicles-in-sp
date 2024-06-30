@@ -18,19 +18,15 @@ public class SpawnMP : Script
     private int doors_config = 0;
     private int blip_config = 0;
     private int[] mode_type = new int[5];
-    private int traffic_blip_config = 0;
     private float[] angle = new float[1];
     private GTA.Vehicle car;
     private int tuning_flag;
-    private int street_flag;
     private int blip_color;
     private int mod_plate;
-    private int cooldown = 0;
     private int plate_id = -1;
     private Vehicle[] veh = new Vehicle[200];
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
-    Blip traffic_marker;
 
     //Coords
     private const int arena = 0;
@@ -175,8 +171,12 @@ public class SpawnMP : Script
     private const int vans_13 = 135;
     private const int wastelander = 136;
     private const int weaponboats = 137;
-
-    private int debug_releport = arena;
+    private const int enforcement_1 = 138;
+    private const int enforcement_2 = 139;
+    private const int enforcement_3 = 140;
+    private const int enforcement_4 = 141;
+    private const int enforcement_5 = 142;
+    private const int pizzaboy = 143;
 
     private List<Vector3> coords = new List<Vector3>()
     {
@@ -318,6 +318,12 @@ public class SpawnMP : Script
         new Vector3(-2555.51f, 2322.827f, 32.06f),
         new Vector3(1111.018f, 2221.073f, 50.140f),
         new Vector3(-3092.066f, 3465.729f, -0.474f),
+        new Vector3(486.359f, -948.2272f, 26.64442f), 
+        new Vector3(127.562f, 15.10451f, 68.00917f),
+        new Vector3(-61.72556f, 6499.053f, 30.99122f),
+        new Vector3(120.8748f, -1709.281f, 28.58102f),
+        new Vector3(-1420.277f, -655.5345f, 28.17369f),
+        new Vector3(541.7154f, 97.22734f, 95.95358f),
 };
 
     private List<float> heading = new List<float>()
@@ -460,6 +466,12 @@ public class SpawnMP : Script
         273.837f,
         273.390f,
         47.552f,
+        90.42657f,
+        -110.5593f,
+        139.6896f,
+        48.76577f,
+        -54.15135f,
+        113.416f,
 };
 
     public SpawnMP()
@@ -1215,6 +1227,26 @@ public class SpawnMP : Script
                     model_name = VehList.models_weaponboats[random.Next(VehList.models_weaponboats.Count)];
                 }
                 break;
+
+            case enforcement_1:
+            case enforcement_2:
+            case enforcement_3:
+            case enforcement_4:
+            case enforcement_5:
+                isEmpty = !VehList.models_enforcement.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_enforcement[random.Next(VehList.models_enforcement.Count)];
+                }
+                break;
+
+            case pizzaboy:
+                isEmpty = !VehList.models_pizza.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_pizza[random.Next(VehList.models_pizza.Count)];
+                }
+                break;
         }
         return model_name;
     }
@@ -1367,6 +1399,24 @@ public class SpawnMP : Script
                             {
                                 Blip mark = CreateMarkerAboveCar(veh[index_db]);
                                 marker.Add(mark);
+                            }
+
+                            //Optional mods (livery, colors, etc.)
+                            switch(model_name)
+                            {
+                                case "policet3":
+                                    veh[index_db].Mods.CustomPrimaryColor = Color.White;
+                                    veh[index_db].Mods.CustomSecondaryColor = Color.Black;
+                                    Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, veh[index_db], 0);
+                                    Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD, veh[index_db], 48, 0, false);
+                                    break;
+
+                                case "brickade2":
+                                    veh[index_db].Mods.CustomPrimaryColor = Color.Black;
+                                    veh[index_db].Mods.CustomSecondaryColor = Color.Black;
+                                    Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, car, 0);
+                                    Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD, car, 48, 5, false);
+                                    break;
                             }
                         }
                     }
