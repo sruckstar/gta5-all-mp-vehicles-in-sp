@@ -63,6 +63,7 @@ public class ReplacePoliceCars : Script
                                 }
                             }
 
+                            car.Delete();
                             veh_dlc_list.Remove(car);
                         }    
 
@@ -74,6 +75,7 @@ public class ReplacePoliceCars : Script
                 {
                     if (car.Driver == Game.Player.Character)
                     {
+                        car.MarkAsNoLongerNeeded();
                         veh_dlc_list.Remove(car);
                     }
                 }

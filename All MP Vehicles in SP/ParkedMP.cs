@@ -178,8 +178,6 @@ public class SpawnMP : Script
     private const int enforcement_5 = 142;
     private const int pizzaboy = 143;
 
-    private int debug_releport = arena;
-
     private List<Vector3> coords = new List<Vector3>()
     {
         new Vector3(-236.7005f, -2061.008f, 27.48775f),
