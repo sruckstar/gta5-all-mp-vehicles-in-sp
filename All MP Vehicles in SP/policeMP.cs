@@ -101,7 +101,7 @@ public class ReplacePoliceCars : Script
     {
         Random rnd = new Random();
 
-        if (police.Model.Hash == new Model(VehList.models_police_traffic[0]).Hash)
+        if (police.Model.Hash == new Model("police5").Hash)
         {
             string zone = Function.Call<string>(Hash.GET_NAME_OF_ZONE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
 
@@ -164,7 +164,7 @@ public class ReplacePoliceCars : Script
                     break;
             }
         }
-        else if (police.Model.Hash == new Model("police5").Hash)
+        else if (police.Model.Hash == new Model("polgauntlet").Hash || police.Model.Hash == new Model("poldorado").Hash || police.Model.Hash == new Model("polimpaler5").Hash || police.Model.Hash == new Model("polgreenwood").Hash)
         {
             string zone = Function.Call<string>(Hash.GET_NAME_OF_ZONE, Game.Player.Character.Position.X, Game.Player.Character.Position.Y, Game.Player.Character.Position.Z);
 

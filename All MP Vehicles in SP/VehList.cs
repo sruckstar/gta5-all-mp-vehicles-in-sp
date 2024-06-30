@@ -335,6 +335,9 @@ public class VehList
 
     public static List<string> models_police_traffic = new List<string>() {
     "polgauntlet",
+    "poldorado",
+    "polimpaler5",
+    "polgreenwood",
     };
 
     public static List<string> models_sedans = new List<string>() {
