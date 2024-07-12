@@ -1364,15 +1364,19 @@ public class SpawnMP : Script
 
         if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
         {
-            foreach (Vehicle car in veh)
-            {
-                if (car.Exists())
-                {
-                    car.Delete();
-                }
-            }
+            bool isEmpty = !veh.Any();
 
-            vehicles_spawned = 0;
+            if (!isEmpty)
+            {
+                foreach (Vehicle car in veh)
+                {
+                    if (car != null && car.Exists())
+                    {
+                        car.Delete();
+                    }
+                }
+                vehicles_spawned = 0;
+            }
         }
 
 

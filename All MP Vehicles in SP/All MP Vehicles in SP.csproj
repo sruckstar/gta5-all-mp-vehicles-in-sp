@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="policeMP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParkedMP.cs" />
     <Compile Include="VehList.cs" />
