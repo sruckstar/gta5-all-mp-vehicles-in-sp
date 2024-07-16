@@ -1364,7 +1364,7 @@ public class SpawnMP : Script
     void OnTick(object sender, EventArgs e)
     {
 
-        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             bool isEmpty = !veh.Any();
 
@@ -1385,7 +1385,7 @@ public class SpawnMP : Script
         int index_db = 0;
 
         //Create vehicles (ON_MISSION = 0)
-        if (!Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (!(Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             foreach (Vector3 veh_coords in coords)
             {
