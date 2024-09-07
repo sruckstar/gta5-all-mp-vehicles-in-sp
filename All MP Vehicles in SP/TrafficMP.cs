@@ -216,7 +216,7 @@ public class TrafficMP : Script
 
     private void OnTick(object sender, EventArgs e)
     {
-        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             foreach (Vehicle car in veh_dlc_list)
             {
@@ -234,7 +234,7 @@ public class TrafficMP : Script
             vehicles_spawned = 0;
         }
 
-        if (street_flag == 1 && !Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (street_flag == 1 && !(Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             if (lockdown == 0 || Game.GameTime > lockdown)
             {

@@ -512,7 +512,8 @@ public class SpawnMP : Script
             }
             catch
             {
-                GTA.UI.Notification.Show("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.");
+                //GTA.UI.Notification.Show("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.");
+                GTA.UI.Notification.PostTicker("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.", true);
             }
         }
         
@@ -1265,7 +1266,8 @@ public class SpawnMP : Script
         veh_model.Request(500);
         if (!veh_model.IsValid)
         {
-            GTA.UI.Notification.Show($"{hash} is invalid model! Please add this model to mp_blacklist.txt");
+            //GTA.UI.Notification.Show($"{hash} is invalid model! Please add this model to mp_blacklist.txt");
+            GTA.UI.Notification.PostTicker($"{hash} is invalid model! Please add this model to mp_blacklist.txt", true);
             return null;
         }
         else
@@ -1362,7 +1364,7 @@ public class SpawnMP : Script
     void OnTick(object sender, EventArgs e)
     {
 
-        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             bool isEmpty = !veh.Any();
 
@@ -1383,7 +1385,7 @@ public class SpawnMP : Script
         int index_db = 0;
 
         //Create vehicles (ON_MISSION = 0)
-        if (!Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (!(Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             foreach (Vector3 veh_coords in coords)
             {
@@ -1480,7 +1482,8 @@ public class SpawnMP : Script
             veh_model.Request(500);
             if (!veh_model.IsValid)
             {
-                GTA.UI.Notification.Show("gstghell1 is invalid model! Please add this model to mp_blacklist.txt");
+                //GTA.UI.Notification.Show("gstghell1 is invalid model! Please add this model to mp_blacklist.txt");
+                GTA.UI.Notification.PostTicker("gstghell1 is invalid model! Please add this model to mp_blacklist.txt", true);
             }
             else
             {
