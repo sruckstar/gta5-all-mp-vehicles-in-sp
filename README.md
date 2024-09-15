@@ -18,7 +18,7 @@ SpawnModelName,class
 
 For example `gstghell1,muscle`
 
-It is mandatory to specify the vehicle class, you can choose from `boats`, `commercial`, `compacts`, `coupes`, `cycles`, `emergency`, `helicopters`, `industrial`, `karting`, `military`, `motorcycles`, `muscle`, `openwheel`, `offroad`, `planes`, `sedans`, `service`, `sports`, `sportsclassics`, `super`, `suvs`, `vans`.
+It is mandatory to specify the vehicle class, you can choose from `boats`, `commercial`, `compacts`, `coupes`, `cycles`, `emergency`, `helicopters`, `industrial`, `karting`, `motorcycles`, `muscle`, `openwheel`, `offroad`, `planes`, `sedans`, `service`, `sports`, `sportsclassics`, `super`, `suvs`, `vans`.
 
 If the author did not specify which class the add-on vehicle belongs to, choose the class that seems most appropriate to you. 
 This setting does not affect the performance of the car. It is necessary for the correct spawning of cars in specific locations.
