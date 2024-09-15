@@ -1410,7 +1410,7 @@ public class SpawnMP : Script
                             //Optional mods (livery, colors, etc.)
                             switch(model_name)
                             {
-                                case "policet3":
+                                case "police3":
                                     veh[index_db].Mods.CustomPrimaryColor = Color.White;
                                     veh[index_db].Mods.CustomSecondaryColor = Color.Black;
                                     Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, veh[index_db], 0);
