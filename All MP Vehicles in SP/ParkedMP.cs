@@ -477,11 +477,18 @@ public class SpawnMP : Script
     public SpawnMP()
     {
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
-        doors_config = config.GetValue<int>("MAIN", "doors", 1);
-        blip_config = config.GetValue<int>("MAIN", "blips", 1);
-        tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
-        mod_plate = config.GetValue<int>("MAIN", "new_license_plates", 0);
-        blip_color = config.GetValue<int>("MAIN", "blip_color", 3);
+        doors_config = config.GetValue<int>("MAIN", "doors", -1);
+        blip_config = config.GetValue<int>("MAIN", "blips", -1); 
+        tuning_flag = config.GetValue<int>("MAIN", "tuning", -1);
+        mod_plate = config.GetValue<int>("MAIN", "new_license_plates", -1);
+        blip_color = config.GetValue<int>("MAIN", "blip_color", -1);
+
+        if (doors_config == -1) config.SetValue<int>("MAIN", "doors", 1);
+        if (blip_config == -1) config.SetValue<int>("MAIN", "blips", 1);
+        if (tuning_flag == -1) config.SetValue<int>("MAIN", "tuning", 1);
+        if (mod_plate == -1) config.SetValue<int>("MAIN", "doors", 0);
+        if (blip_color == -1) config.SetValue<int>("MAIN", "blip_color", 3);
+        config.Save();
 
         char symbol = '#';
         string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
