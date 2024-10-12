@@ -1272,8 +1272,7 @@ public class SpawnMP : Script
         veh_model.Request(500);
         if (!veh_model.IsValid)
         {
-            //GTA.UI.Notification.Show($"{hash} is invalid model! Please add this model to mp_blacklist.txt");
-            GTA.UI.Notification.PostTicker($"{hash} is invalid model! Please add this model to mp_blacklist.txt", true);
+            GTA.UI.Notification.PostTicker($"The {hash} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
             return null;
         }
         else
