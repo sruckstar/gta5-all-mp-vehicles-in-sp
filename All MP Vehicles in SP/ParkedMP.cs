@@ -477,11 +477,18 @@ public class SpawnMP : Script
     public SpawnMP()
     {
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
-        doors_config = config.GetValue<int>("MAIN", "doors", 1);
-        blip_config = config.GetValue<int>("MAIN", "blips", 1);
-        tuning_flag = config.GetValue<int>("MAIN", "tuning", 1);
-        mod_plate = config.GetValue<int>("MAIN", "new_license_plates", 0);
-        blip_color = config.GetValue<int>("MAIN", "blip_color", 3);
+        doors_config = config.GetValue<int>("MAIN", "doors", -1);
+        blip_config = config.GetValue<int>("MAIN", "blips", -1); 
+        tuning_flag = config.GetValue<int>("MAIN", "tuning", -1);
+        mod_plate = config.GetValue<int>("MAIN", "new_license_plates", -1);
+        blip_color = config.GetValue<int>("MAIN", "blip_color", -1);
+
+        if (doors_config == -1) config.SetValue<int>("MAIN", "doors", 1);
+        if (blip_config == -1) config.SetValue<int>("MAIN", "blips", 1);
+        if (tuning_flag == -1) config.SetValue<int>("MAIN", "tuning", 1);
+        if (mod_plate == -1) config.SetValue<int>("MAIN", "doors", 0);
+        if (blip_color == -1) config.SetValue<int>("MAIN", "blip_color", 3);
+        config.Save();
 
         char symbol = '#';
         string[] lines = File.ReadAllLines("Scripts\\mp_blacklist.txt");
@@ -512,7 +519,8 @@ public class SpawnMP : Script
             }
             catch
             {
-                GTA.UI.Notification.Show("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.");
+                //GTA.UI.Notification.Show("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.");
+                GTA.UI.Notification.PostTicker("Error in loading the vehicle Add-On. Check if the entries in NewVehiclesList.txt are correct and try again.", true);
             }
         }
         
@@ -633,7 +641,6 @@ public class SpawnMP : Script
        
 
         Tick += OnTick;
-        KeyUp += onkeyup;
         Aborted += OnAborded;
     }
 
@@ -1265,7 +1272,8 @@ public class SpawnMP : Script
         veh_model.Request(500);
         if (!veh_model.IsValid)
         {
-            GTA.UI.Notification.Show($"{hash} is invalid model! Please add this model to mp_blacklist.txt");
+            //GTA.UI.Notification.Show($"{hash} is invalid model! Please add this model to mp_blacklist.txt");
+            GTA.UI.Notification.PostTicker($"{hash} is invalid model! Please add this model to mp_blacklist.txt", true);
             return null;
         }
         else
@@ -1362,7 +1370,7 @@ public class SpawnMP : Script
     void OnTick(object sender, EventArgs e)
     {
 
-        if (vehicles_spawned == 1 && Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             bool isEmpty = !veh.Any();
 
@@ -1383,7 +1391,7 @@ public class SpawnMP : Script
         int index_db = 0;
 
         //Create vehicles (ON_MISSION = 0)
-        if (!Function.Call<bool>(Hash.GET_MISSION_FLAG))
+        if (!(Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             foreach (Vector3 veh_coords in coords)
             {
@@ -1408,7 +1416,7 @@ public class SpawnMP : Script
                             //Optional mods (livery, colors, etc.)
                             switch(model_name)
                             {
-                                case "policet3":
+                                case "police3":
                                     veh[index_db].Mods.CustomPrimaryColor = Color.White;
                                     veh[index_db].Mods.CustomSecondaryColor = Color.Black;
                                     Function.Call(GTA.Native.Hash.SET_VEHICLE_MOD_KIT, veh[index_db], 0);
@@ -1469,25 +1477,6 @@ public class SpawnMP : Script
                 veh[index_db] = null;
             }
             index_db++;
-        }
-    }
-
-    private void onkeyup(object sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.N)
-        {
-            var veh_model = new Model("gstghell1");
-            veh_model.Request(500);
-            if (!veh_model.IsValid)
-            {
-                GTA.UI.Notification.Show("gstghell1 is invalid model! Please add this model to mp_blacklist.txt");
-            }
-            else
-            {
-                var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 5, 0));
-                var heading = Game.Player.Character.Heading - 90;
-                var vehicle = World.CreateVehicle(veh_model, position, heading);
-            }
         }
     }
 }
