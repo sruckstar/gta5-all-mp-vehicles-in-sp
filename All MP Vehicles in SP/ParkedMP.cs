@@ -641,7 +641,6 @@ public class SpawnMP : Script
        
 
         Tick += OnTick;
-        KeyUp += onkeyup;
         Aborted += OnAborded;
     }
 
@@ -1478,26 +1477,6 @@ public class SpawnMP : Script
                 veh[index_db] = null;
             }
             index_db++;
-        }
-    }
-
-    private void onkeyup(object sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.N)
-        {
-            var veh_model = new Model("gstghell1");
-            veh_model.Request(500);
-            if (!veh_model.IsValid)
-            {
-                //GTA.UI.Notification.Show("gstghell1 is invalid model! Please add this model to mp_blacklist.txt");
-                GTA.UI.Notification.PostTicker("gstghell1 is invalid model! Please add this model to mp_blacklist.txt", true);
-            }
-            else
-            {
-                var position = Game.Player.Character.GetOffsetPosition(new Vector3(0, 5, 0));
-                var heading = Game.Player.Character.Heading - 90;
-                var vehicle = World.CreateVehicle(veh_model, position, heading);
-            }
         }
     }
 }
