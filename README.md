@@ -29,8 +29,8 @@ Open the file `mp_blacklist.txt` and add the names of the DLC cars you do not wa
 
 # Installation
 
-1. Download [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
-2. Download [a nightly version of ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases)
+1. Install [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
+2. Install [a nightly version of ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases)
 3. Move the `scripts` folder into your main GTAV folder (press _Replace the files in the destination_ if Windows asks you to).
 
 # Script Settings
