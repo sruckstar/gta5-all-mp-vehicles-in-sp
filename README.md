@@ -20,8 +20,8 @@ For example `gstghell1,muscle`
 
 It is mandatory to specify the vehicle class, you can choose from `boats`, `commercial`, `compacts`, `coupes`, `cycles`, `emergency`, `helicopters`, `industrial`, `karting`, `motorcycles`, `muscle`, `openwheel`, `offroad`, `planes`, `sedans`, `service`, `sports`, `sportsclassics`, `super`, `suvs`, `vans`.
 
-If the author did not specify which class the add-on vehicle belongs to, choose the class that seems most appropriate to you. 
-This setting does not affect the performance of the car. It is necessary for the correct spawning of cars in specific locations.
+If the author did not specify the add-on vehicle's class, choose the class that seems most appropriate to you. 
+This setting does not affect the car's performance but is necessary for the correct spawning of cars in specific locations.
 
 # Adding cars to the blacklist
 Starting with version 2.0.0 you can add cars to the blacklist. In this case, they will not appear in parking lots and traffic. You will still be able to get these cars with a trainer or other mods.
@@ -30,7 +30,7 @@ Open the file `mp_blacklist.txt` and add the names of the DLC cars you do not wa
 # Installation
 
 1. Download [ScriptHookV](http://dev-c.com/gtav/scripthookv/)
-2. Download [ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases)
+2. Download [nightly version of ScriptHookVDotNet](https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases)
 3. Move the `scripts` folder into your main GTAV folder (press _Replace the files in the destination_ if Windows asks you to).
 
 # Script Settings
@@ -46,6 +46,6 @@ You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder)
 - `spawn_traffic` - enable or disable spawning of DLC cars in traffic.
 - `traffic_cars_blips` - enable or disable blips of DLC cars in traffic.
 - `new_license_plates` - install unique license plates from the Chop Shop update on cars (may crash the game on earlier versions of the game)
-- `blip_color` - set the color of car tags in parking lots (values from 0 to 85)
-- `blip_color_traffic` - set the color of car labels in traffic (values from 0 to 85)
+- `blip_color` - set the color of car tags in parking lots (values from 0 to 85, [click here](https://docs.fivem.net/docs/game-references/blips/#blip-colors) to see what numbers are what colors)
+- `blip_color_traffic` - set the color of car labels in traffic (values from 0 to 85, [click here](https://docs.fivem.net/docs/game-references/blips/#blip-colors) to see what numbers are what colors)
 - `time_traffic_gen` - the time in milliseconds between cars being spawned in traffic (minimum value is 3000, default is 8000)
