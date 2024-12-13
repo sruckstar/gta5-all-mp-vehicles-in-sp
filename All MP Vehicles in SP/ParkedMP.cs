@@ -177,6 +177,11 @@ public class SpawnMP : Script
     private const int enforcement_4 = 141;
     private const int enforcement_5 = 142;
     private const int pizzaboy = 143;
+    private const int police_bros_1 = 144;
+    private const int police_bros_2 = 145;
+    private const int plane_sandy = 146;
+    private const int heli_sandy = 147;
+    private const int titan2 = 148;
 
     private List<Vector3> coords = new List<Vector3>()
     {
@@ -324,6 +329,12 @@ public class SpawnMP : Script
         new Vector3(120.8748f, -1709.281f, 28.58102f),
         new Vector3(-1420.277f, -655.5345f, 28.17369f),
         new Vector3(541.7154f, 97.22734f, 95.95358f),
+        new Vector3(714.0365f, -981.6344f, 23.54063f),
+        new Vector3(722.5751f, -981.2658f, 23.4088f),
+        new Vector3(1705.741f, 3271.236f, 41.56281f),
+        new Vector3(2140.588f, 4816.544f, 41.05009f),
+        new Vector3(-2078.637f, 2931.623f, 33.99109f),
+
 };
 
     private List<float> heading = new List<float>()
@@ -472,6 +483,12 @@ public class SpawnMP : Script
         48.76577f,
         -54.15135f,
         113.416f,
+        -31.42274f,
+        60.22583f,
+        -179.1466f,
+        115.5491f,
+        58.04224f,
+
 };
 
     public SpawnMP()
@@ -1252,6 +1269,46 @@ public class SpawnMP : Script
                 if ((veh[index_db] == null && !isEmpty) || type == 1)
                 {
                     model_name = VehList.models_pizza[random.Next(VehList.models_pizza.Count)];
+                }
+                break;
+
+            case police_bros_1:
+                isEmpty = !VehList.models_bros_1.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_bros_1[random.Next(VehList.models_bros_1.Count)];
+                }
+                break;
+
+            case police_bros_2:
+                isEmpty = !VehList.models_bros_2.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_bros_2[random.Next(VehList.models_bros_2.Count)];
+                }
+                break;
+
+            case plane_sandy:
+                isEmpty = !VehList.models_plane_sandy.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_plane_sandy[random.Next(VehList.models_plane_sandy.Count)];
+                }
+                break;
+
+            case heli_sandy:
+                isEmpty = !VehList.models_heli_sandy.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_heli_sandy[random.Next(VehList.models_heli_sandy.Count)];
+                }
+                break;
+
+            case titan2:
+                isEmpty = !VehList.models_titan2.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_titan2[random.Next(VehList.models_titan2.Count)];
                 }
                 break;
         }
