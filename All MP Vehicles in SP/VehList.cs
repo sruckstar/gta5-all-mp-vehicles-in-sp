@@ -609,10 +609,12 @@ public class VehList
 
     public static List<string> models_bros_1 = new List<string>() {
     "polcoquette4",
+    "polcaracara2",
     };
 
     public static List<string> models_bros_2 = new List<string>() {
     "polfaction2",
+    "polterminus",
     };
 
     public static List<string> models_plane_sandy = new List<string>() {

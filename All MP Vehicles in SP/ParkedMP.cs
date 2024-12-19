@@ -27,6 +27,7 @@ public class SpawnMP : Script
     private Vehicle[] veh = new Vehicle[200];
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
+    private int debugging = 0;
 
     //Coords
     private const int arena = 0;
@@ -499,12 +500,14 @@ public class SpawnMP : Script
         tuning_flag = config.GetValue<int>("MAIN", "tuning", -1);
         mod_plate = config.GetValue<int>("MAIN", "new_license_plates", -1);
         blip_color = config.GetValue<int>("MAIN", "blip_color", -1);
+        debugging = config.GetValue<int>("MAIN", "show_errors", 0);
 
         if (doors_config == -1) config.SetValue<int>("MAIN", "doors", 1);
         if (blip_config == -1) config.SetValue<int>("MAIN", "blips", 1);
         if (tuning_flag == -1) config.SetValue<int>("MAIN", "tuning", 1);
         if (mod_plate == -1) config.SetValue<int>("MAIN", "doors", 0);
         if (blip_color == -1) config.SetValue<int>("MAIN", "blip_color", 3);
+
         config.Save();
 
         char symbol = '#';
@@ -1329,6 +1332,8 @@ public class SpawnMP : Script
         veh_model.Request(500);
         if (!veh_model.IsValid)
         {
+            if (debugging == 1) GTA.UI.Notification.PostTicker($"The {hash} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
+
             GTA.UI.Notification.PostTicker($"The {hash} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
             return null;
         }

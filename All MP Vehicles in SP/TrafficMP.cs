@@ -25,6 +25,7 @@ public class TrafficMP : Script
     List<Vehicle> veh_dlc_list = new List<Vehicle>();
     List<Ped> ped_dlc_list = new List<Ped>();
     ScriptSettings config;
+    int debugging = 0;
 
     public TrafficMP()
     {
@@ -36,6 +37,7 @@ public class TrafficMP : Script
         traffic_blip_config = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
         street_flag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         time_traffic_gen = config.GetValue<int>("MAIN", "time_traffic_gen", 8000);
+        debugging = config.GetValue<int>("MAIN", "show_errors", 0);
 
         if (time_traffic_gen < 3000)
         {
@@ -147,13 +149,15 @@ public class TrafficMP : Script
         var rdVehicle = new Random();
         var model = new Model(modelString);
         model.Request(250);
-        while (!model.IsLoaded)
+        if (!model.IsValid)
         {
-            Script.Wait(0);
+            if (debugging == 1) GTA.UI.Notification.PostTicker($"The {modelString} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
+            return null;
         }
-
-        if (model.IsInCdImage && model.IsValid)
+        else
         {
+            while (!model.IsLoaded) Script.Wait(0);
+
             veh = World.CreateVehicle(model, pos, heading);
             while (veh == null) Script.Wait(0);
             Function.Call(Hash.SET_ENTITY_COLLISION, veh, false, false);
@@ -169,10 +173,8 @@ public class TrafficMP : Script
                 }
             }
             Function.Call(Hash.SET_ENTITY_COLLISION, veh, true, true);
-
             return veh;
-        }
-        return null;
+        }    
     }
 
     public Ped SetDrive(Vehicle car, int ped_hash, int ped_type)
@@ -258,12 +260,9 @@ public class TrafficMP : Script
                     traffic_blip.Delete();
                 }
 
-                traffic_veh = null;
-                while (traffic_veh == null)
-                {
-                    Script.Wait(0);
-                    traffic_veh = SpawnVehicle(model_name, pos, heading);
-                }
+                traffic_veh = SpawnVehicle(model_name, pos, heading);
+                if (traffic_veh == null) return;
+
                 veh_dlc_list.Add(traffic_veh);
                 traffic_ped = SetDrive(traffic_veh, ped_model, type);
                 ped_dlc_list.Add(traffic_ped);
