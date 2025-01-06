@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("All MP Vehicles in SP")]
-[assembly: AssemblyDescription("This SHVDN script makes GTA Online-only vehicles spawn in appear across GTAV map.")]
+[assembly: AssemblyDescription("This SHVDN script makes GTA Online-only vehicles appear across GTAV map.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nilax Inc.")]
 [assembly: AssemblyProduct("All MP Vehicles in SP")]
