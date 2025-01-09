@@ -307,7 +307,7 @@ public class VehList
     "terminus",
     "yosemite1500",
     "firebolt",
-    "uranus1",
+    "uranus",
     };
 
     public static List<string> models_openwheel = new List<string>() {
