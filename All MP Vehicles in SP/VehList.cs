@@ -307,7 +307,7 @@ public class VehList
     "terminus",
     "yosemite1500",
     "firebolt",
-    "uranus1",
+    "uranus",
     };
 
     public static List<string> models_openwheel = new List<string>() {
@@ -609,7 +609,7 @@ public class VehList
 
     public static List<string> models_bros_1 = new List<string>() {
     "polcoquette4",
-    "polcaracara2",
+    "polcaracara",
     };
 
     public static List<string> models_bros_2 = new List<string>() {
