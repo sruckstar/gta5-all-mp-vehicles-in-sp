@@ -28,6 +28,7 @@ public class SpawnMP : Script
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
     private int debugging = 0;
+    private string mod_version = "1.70";
 
     //Coords
     private const int arena = 0;
@@ -494,6 +495,12 @@ public class SpawnMP : Script
 
     public SpawnMP()
     {
+        string onlineVersion = Function.Call<string>(Hash.GET_ONLINE_VERSION);
+        if (onlineVersion != mod_version)
+        {
+            GTA.UI.Notification.PostTicker($"~r~WARNING:\n~s~Your version of the game is out of date. ~g~All MP Vehicles in SP ~s~will not be able to load vehicles from new updates.\n\nRequired Game Version:\n{mod_version}\nYour Game Version: {onlineVersion}", true);
+        }
+
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         doors_config = config.GetValue<int>("MAIN", "doors", -1);
         blip_config = config.GetValue<int>("MAIN", "blips", -1); 
@@ -1332,9 +1339,7 @@ public class SpawnMP : Script
         veh_model.Request(500);
         if (!veh_model.IsValid)
         {
-            if (debugging == 1) GTA.UI.Notification.PostTicker($"The {hash} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
 
-            GTA.UI.Notification.PostTicker($"The {hash} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
             return null;
         }
         else

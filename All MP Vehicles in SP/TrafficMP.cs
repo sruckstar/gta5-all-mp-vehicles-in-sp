@@ -26,6 +26,8 @@ public class TrafficMP : Script
     List<Ped> ped_dlc_list = new List<Ped>();
     ScriptSettings config;
     int debugging = 0;
+    const int MAX_VEHICLES = 10;
+    const float REMOVE_DISTANCE = 200.0f; // Дистанция удаления
 
     public TrafficMP()
     {
@@ -151,7 +153,6 @@ public class TrafficMP : Script
         model.Request(250);
         if (!model.IsValid)
         {
-            if (debugging == 1) GTA.UI.Notification.PostTicker($"The {modelString} model could not be found. If you have a licensed version of the game, update the dlclist.xml in the mods folder to the latest version.", true);
             return null;
         }
         else
@@ -218,6 +219,8 @@ public class TrafficMP : Script
 
     private void OnTick(object sender, EventArgs e)
     {
+        //GTA.UI.Screen.ShowSubtitle("Автомобилей в трафике: " + veh_dlc_list.Count);
+
         if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {
             foreach (Vehicle car in veh_dlc_list)
@@ -233,6 +236,7 @@ public class TrafficMP : Script
                 }
             }
 
+            veh_dlc_list.Clear();
             vehicles_spawned = 0;
         }
 
@@ -240,13 +244,46 @@ public class TrafficMP : Script
         {
             if (lockdown == 0 || Game.GameTime > lockdown)
             {
+                // Если машин >= MAX_VEHICLES, пробуем удалить дальнюю
+                if (veh_dlc_list.Count >= MAX_VEHICLES)
+                {
+                    Vehicle farthestCar = null;
+                    float maxDistance = REMOVE_DISTANCE;
+
+                    foreach (Vehicle car in veh_dlc_list)
+                    {
+                        if (car.Exists())
+                        {
+                            float distance = car.Position.DistanceTo(Game.Player.Character.Position);
+                            if (distance > maxDistance)
+                            {
+                                maxDistance = distance;
+                                farthestCar = car;
+                            }
+                        }
+                    }
+
+                    // Если нашли машину дальше 200 метров — удаляем
+                    if (farthestCar != null)
+                    {
+                        Ped ped = farthestCar.Driver;
+                        if (ped != null && ped.Exists()) ped.Delete();
+                        farthestCar.Delete();
+                        veh_dlc_list.Remove(farthestCar);
+                    }
+                    else
+                    {
+                        return; // Если нет машин дальше 200м, новых не спавним
+                    }
+                }
+
                 Vehicle temp_veh = null;
                 while (temp_veh == null)
                 {
                     Script.Wait(0);
                     temp_veh = FindOriginalVehicle();
-
                 }
+
                 Vector3 pos = temp_veh.Position;
                 float heading = temp_veh.Heading;
                 Ped driver = temp_veh.Driver;
@@ -281,35 +318,6 @@ public class TrafficMP : Script
                         if (car.Driver == Game.Player.Character)
                         {
                             veh_dlc_list.Remove(car);
-                        }
-                    }
-                }
-
-                foreach (Vehicle car in veh_dlc_list.ToArray())
-                {
-                    if (car.Exists())
-                    {
-                        if (car.Position.DistanceTo(Game.Player.Character.Position) > 150.0f)
-                        {
-                            Ped ped = car.Driver;
-                            if (ped != null && ped.Exists())
-                            {
-                                ped.Delete();
-                            }
-                            car.Delete();
-                            veh_dlc_list.Remove(car);
-                        }
-                    }
-                }
-
-                foreach (Ped ped in ped_dlc_list.ToArray())
-                {
-                    if (ped.Exists())
-                    {
-                        if (ped.Position.DistanceTo(Game.Player.Character.Position) > 150.0f)
-                        {
-                            ped.Delete();
-                            ped_dlc_list.Remove(ped);
                         }
                     }
                 }
