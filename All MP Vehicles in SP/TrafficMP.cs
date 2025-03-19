@@ -124,6 +124,11 @@ public class TrafficMP : Script
                vehicle.Model == VehicleHash.FireTruck;
     }
 
+    private bool IsDriverCop(Ped ped)
+    {
+        return Function.Call<int>(Hash.GET_PED_TYPE, ped) == 6;
+    }
+
     public Vehicle FindOriginalVehicle()
     {
         Vehicle[] veh_list = World.GetNearbyVehicles(Game.Player.Character, 50.0f);
@@ -136,6 +141,8 @@ public class TrafficMP : Script
                 car.Position.DistanceTo(Game.Player.Character.Position) > 30.0f && 
                 Function.Call<int>(Hash.GET_ENTITY_POPULATION_TYPE, car) != 7 &&
                 car.Driver != null &&
+                car.Driver.IsAlive &&
+                !IsDriverCop(car.Driver) &&
                 Function.Call<bool>(Hash.IS_THIS_MODEL_A_CAR, car.Model.Hash)
                 )
             {
