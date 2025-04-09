@@ -19,6 +19,7 @@ public class VehicleData
     public Dictionary<VehicleModType, int> Modifications;
     public int OwnerHash;
     public bool IsCurrentVehicle;
+    string BlipName;
 }
 
 public class SaveVehicleScript : Script
@@ -39,9 +40,9 @@ public class SaveVehicleScript : Script
 
     public SaveVehicleScript()
     {
-        //Tick += OnTick;
-        //Aborted += OnAbort;
-        //LoadDlcVehicles();
+        /*/Tick += OnTick;
+        Aborted += OnAbort;
+        LoadDlcVehicles();/*/
     }
 
     private void LoadDlcVehicles()
@@ -88,7 +89,12 @@ public class SaveVehicleScript : Script
     private Blip SetBlipColor(PedHash player, Vehicle veh, int test)
     {
         Blip bp = veh.AddBlip();
-        bp.Sprite = BlipSprite.PersonalVehicleCar;
+
+        if (veh.IsMotorcycle) bp.Sprite = BlipSprite.PersonalVehicleBike;
+        else bp.Sprite = BlipSprite.PersonalVehicleCar;
+
+        bp.Name = Game.GetLocalizedString("FMMC_UTYPE_8");
+
         if ((PedHash)player == PedHash.Michael) bp.Color = BlipColor.Michael;
         else if ((PedHash)player == PedHash.Franklin) bp.Color = BlipColor.Franklin;
         else if ((PedHash)player == PedHash.Trevor) bp.Color = BlipColor.Trevor;
@@ -108,6 +114,8 @@ public class SaveVehicleScript : Script
 
     private void ReplaceTargetVehicles()
     {
+        if (Function.Call<bool>(Hash.GET_MISSION_FLAG)) return;
+
         Dictionary<int, VehicleData> personalVehicles = LoadPersonalVehicles();
         if (personalVehicles.Count == 0) return;
 
@@ -343,41 +351,6 @@ public class SaveVehicleScript : Script
                 }
             }
         }
-    }
-
-    private Vehicle ReplaceVehicleAndReassignPassengers(Vehicle oldVehicle, VehicleHash newModel)
-    {
-        if (oldVehicle == null || !oldVehicle.Exists()) return null;
-
-        Vector3 spawnPos = oldVehicle.Position;
-        Vehicle newVehicle = null;
-        List<(Ped ped, VehicleSeat seat)> occupants = new List<(Ped, VehicleSeat)>();
-
-        int seatCount = Function.Call<int>(Hash.GET_VEHICLE_MODEL_NUMBER_OF_SEATS, oldVehicle.Model);
-
-        // Запоминаем всех пассажиров и водителя с их мест
-        for (int i = -1; i < seatCount - 1; i++) // -1 это водитель
-        {
-            Ped ped = oldVehicle.GetPedOnSeat((VehicleSeat)i);
-            if (ped != null && ped.Exists())
-            {
-                occupants.Add((ped, (VehicleSeat)i));
-            }
-        }
-
-        oldVehicle.Delete();
-        newVehicle = World.CreateVehicle(newModel, spawnPos);
-
-        // Рассаживаем всех обратно
-        foreach (var (ped, seat) in occupants)
-        {
-            if (ped != null && ped.Exists())
-            {
-                ped.Task.WarpIntoVehicle(newVehicle, seat);
-            }
-        }
-
-        return newVehicle;
     }
 
     private void SavePersonalVehicle(Vehicle vehicle, bool currentVeh)

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +24,7 @@ public class SpawnMP : Script
     private int blip_color;
     private int mod_plate;
     private int plate_id = -1;
+    private bool IsHSW = false;
     private Vehicle[] veh = new Vehicle[200];
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
@@ -184,6 +185,7 @@ public class SpawnMP : Script
     private const int plane_sandy = 146;
     private const int heli_sandy = 147;
     private const int titan2 = 148;
+    private const int hsw = 149;
 
     private List<Vector3> coords = new List<Vector3>()
     {
@@ -336,6 +338,7 @@ public class SpawnMP : Script
         new Vector3(1705.741f, 3271.236f, 41.56281f),
         new Vector3(2140.588f, 4816.544f, 41.05009f),
         new Vector3(-2078.637f, 2931.623f, 33.99109f),
+        new Vector3(792.5626f, -1862.284f, 28.52566f),
 
 };
 
@@ -490,6 +493,7 @@ public class SpawnMP : Script
         -179.1466f,
         115.5491f,
         58.04224f,
+        167.2133f,
 
 };
 
@@ -1321,6 +1325,15 @@ public class SpawnMP : Script
                     model_name = VehList.models_titan2[random.Next(VehList.models_titan2.Count)];
                 }
                 break;
+
+            case hsw:
+                isEmpty = !VehList.models_hsw.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_hsw[random.Next(VehList.models_hsw.Count)];
+                    IsHSW = true;
+                }
+                break;
         }
         return model_name;
     }
@@ -1355,6 +1368,7 @@ public class SpawnMP : Script
 
             if (tuning_flag == 1)
             {
+                Function.Call(Hash.SET_VEHICLE_MOD_KIT, car, 0);
                 Random rnd = new Random();
                 int num;
                 int modindex;
@@ -1399,6 +1413,19 @@ public class SpawnMP : Script
                     Function.Call(Hash.SET_VEHICLE_MOD_COLOR_1, car, modindex, color_1, 0);
                     Function.Call(Hash.SET_VEHICLE_MOD_COLOR_2, car, modindex, color_2, 0);
                 }
+            }
+
+            if (IsHSW)
+            {
+                Function.Call(Hash.SET_VEHICLE_MOD, car, 36, 0, 0); //HSW Base
+                Function.Call(Hash.SET_VEHICLE_MOD, car, 34, 2, 0); //HSW Turbo
+
+                Random rnd_liv = new Random();
+                int livery = rnd_liv.Next(1, 3);
+                int mods = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 48) - livery;
+                Function.Call(Hash.SET_VEHICLE_MOD, car, 48, mods, 0); //HSW Livery
+
+                IsHSW = false;
             }
 
             vehicles_spawned = 1;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +34,8 @@ public class TrafficMP : Script
     {
         Tick += OnTick;
         Aborted += OnAborted;
+
+        Function.Call(Hash.REQUEST_IPL, "m23_1_garage");
 
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
         blip_color = config.GetValue<int>("MAIN", "blip_color_traffic", 3);
@@ -108,7 +111,7 @@ public class TrafficMP : Script
         return model_name;
     }
 
-    private bool IsEmergencyVehicle(Vehicle vehicle)
+    public static bool IsEmergencyVehicle(Vehicle vehicle)
     {
         return vehicle.Model == VehicleHash.Police ||
                vehicle.Model == VehicleHash.Police2 ||
@@ -135,10 +138,10 @@ public class TrafficMP : Script
 
         foreach (Vehicle car in veh_list)
         {
-            if (!car.IsOnScreen && 
-                !veh_dlc_list.Contains(car) && 
-                !IsEmergencyVehicle(car) && 
-                car.Position.DistanceTo(Game.Player.Character.Position) > 30.0f && 
+            if (!car.IsOnScreen &&
+                !veh_dlc_list.Contains(car) &&
+                !IsEmergencyVehicle(car) &&
+                car.Position.DistanceTo(Game.Player.Character.Position) > 30.0f &&
                 Function.Call<int>(Hash.GET_ENTITY_POPULATION_TYPE, car) != 7 &&
                 car.Driver != null &&
                 car.Driver.IsAlive &&
@@ -182,7 +185,7 @@ public class TrafficMP : Script
             }
             Function.Call(Hash.SET_ENTITY_COLLISION, veh, true, true);
             return veh;
-        }    
+        }
     }
 
     public Ped SetDrive(Vehicle car, int ped_hash, int ped_type)

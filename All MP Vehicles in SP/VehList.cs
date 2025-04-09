@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -267,6 +268,7 @@ public class VehList
     "dominator9",
     "impaler6",
     "dominator10",
+    "arbitergt",
     };
 
     public static List<string> models_offroad = new List<string>() {
@@ -466,7 +468,7 @@ public class VehList
     "banshee3",
     "jester5",
     "coquette6",
-
+    "s95",
     };
 
     public static List<string> models_submarine = new List<string>() {
@@ -519,6 +521,8 @@ public class VehList
     "osiris",
     "turismo3",
     "pipistrello",
+    "cyclone2",
+
     };
 
     public static List<string> models_suvs = new List<string>() {
@@ -546,6 +550,7 @@ public class VehList
     "baller8",
     "dorado",
     "castigator",
+    "astron2",
     };
 
     public static List<string> models_towtruck = new List<string>() {
@@ -627,5 +632,33 @@ public class VehList
 
     public static List<string> models_titan2 = new List<string>() {
     "titan2",
+    };
+
+    public static List<string> models_hsw = new List<string>() {
+    "s95",
+    "astron2",
+    "firebolt",
+    "banshee3",
+    "eurosx32",
+    "niobe",
+    "vigero3",
+    "fr36",
+    "vivanite",
+    "coureur",
+    "buffalo5",
+    "monstrociti",
+    "stingertt",
+    "issi8",
+    "entity3",
+    "vigero2",
+    "arbitergt",
+    "arbitergt", //Replace with "ignus2" in the future
+    "turismo2",
+    "sentinel",
+    "banshee",
+    "hakuchou2",
+    "deveste",
+    "brioso",
+    "feltzer3"
     };
 }
