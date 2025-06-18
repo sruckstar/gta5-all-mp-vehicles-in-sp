@@ -171,6 +171,7 @@ public class TrafficMP : Script
 
             veh = World.CreateVehicle(model, pos, heading);
             while (veh == null) Script.Wait(0);
+            model.MarkAsNoLongerNeeded();
             Function.Call(Hash.SET_ENTITY_COLLISION, veh, false, false);
 
             foreach (Vehicle v in World.GetAllVehicles())

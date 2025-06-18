@@ -29,7 +29,7 @@ public class SpawnMP : Script
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
     private int debugging = 0;
-    private string mod_version = "1.70";
+    private string mod_version = "1.71";
 
     //Coords
     private const int arena = 0;
@@ -186,6 +186,7 @@ public class SpawnMP : Script
     private const int heli_sandy = 147;
     private const int titan2 = 148;
     private const int hsw = 149;
+    private const int heli_higgins = 150;
 
     private List<Vector3> coords = new List<Vector3>()
     {
@@ -339,6 +340,7 @@ public class SpawnMP : Script
         new Vector3(2140.588f, 4816.544f, 41.05009f),
         new Vector3(-2078.637f, 2931.623f, 33.99109f),
         new Vector3(792.5626f, -1862.284f, 28.52566f),
+        new Vector3(-744.5989f, -1467.786f, 5.675299f),
 
 };
 
@@ -494,6 +496,7 @@ public class SpawnMP : Script
         115.5491f,
         58.04224f,
         167.2133f,
+        -40.04208f,
 
 };
 
@@ -667,9 +670,13 @@ public class SpawnMP : Script
 
             if (VehList.models_weaponboats.Contains(hash))
                 VehList.models_weaponboats.Remove(hash);
-        }
 
-       
+            if (VehList.models_hsw.Contains(hash))
+                VehList.models_hsw.Remove(hash);
+
+            if (VehList.models_higgins.Contains(hash))
+                VehList.models_higgins.Remove(hash);
+        }
 
         Tick += OnTick;
         Aborted += OnAborded;
@@ -1334,6 +1341,14 @@ public class SpawnMP : Script
                     IsHSW = true;
                 }
                 break;
+
+            case heli_higgins:
+                isEmpty = !VehList.models_higgins.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_higgins[random.Next(VehList.models_higgins.Count)];
+                }
+                break;
         }
         return model_name;
     }
@@ -1359,7 +1374,7 @@ public class SpawnMP : Script
         {
             while (!veh_model.IsLoaded) Script.Wait(100);
             car = World.CreateVehicle(veh_model, pos, heading);
-
+            veh_model.MarkAsNoLongerNeeded();
             if (doors_config == 1)
             {
                 GTA.Native.Function.Call(GTA.Native.Hash.SET_VEHICLE_DOORS_LOCKED, car, 7);
@@ -1539,6 +1554,7 @@ public class SpawnMP : Script
                 Blip mark = Function.Call<Blip>(Hash.GET_BLIP_FROM_ENTITY, car);
                 if (mark != null && mark.Exists())
                     mark.Delete();
+                    marker.Remove(mark);
                 car.MarkAsNoLongerNeeded();
             }
             index_db++;

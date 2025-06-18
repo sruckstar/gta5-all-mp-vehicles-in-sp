@@ -123,6 +123,9 @@ public class VehList
     "phantom2",
     "mule3",
     "boxville4",
+    "flatbed2",
+    "stockade4",
+
     };
 
     public static List<string> models_karting = new List<string>() {
@@ -269,6 +272,7 @@ public class VehList
     "impaler6",
     "dominator10",
     "arbitergt",
+    "tampa4",
     };
 
     public static List<string> models_offroad = new List<string>() {
@@ -310,6 +314,7 @@ public class VehList
     "yosemite1500",
     "firebolt",
     "uranus1",
+    "l352",
     };
 
     public static List<string> models_openwheel = new List<string>() {
@@ -366,6 +371,8 @@ public class VehList
     "impaler5",
     "vorschlaghammer",
     "chavosv6",
+    "hardy",
+    "minimus",
 
     };
 
@@ -469,6 +476,9 @@ public class VehList
     "jester5",
     "coquette6",
     "s95",
+    "cheetah3",
+    "rapidgt4",
+    "sentinel5",
     };
 
     public static List<string> models_submarine = new List<string>() {
@@ -522,6 +532,7 @@ public class VehList
     "turismo3",
     "pipistrello",
     "cyclone2",
+    "suzume",
 
     };
 
@@ -551,6 +562,8 @@ public class VehList
     "dorado",
     "castigator",
     "astron2",
+    "everon3",
+    "woodlander",
     };
 
     public static List<string> models_towtruck = new List<string>() {
@@ -606,6 +619,7 @@ public class VehList
 
     public static List<string> models_enforcement = new List<string>() {
     "policet3",
+    "policeb2",
     };
 
     public static List<string> models_pizza = new List<string>() {
@@ -660,5 +674,9 @@ public class VehList
     "deveste",
     "brioso",
     "feltzer3"
+    };
+
+    public static List<string> models_higgins = new List<string>() {
+    "maverick2",
     };
 }
