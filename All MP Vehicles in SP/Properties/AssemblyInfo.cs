@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("All MP Vehicles in SP")]
-[assembly: AssemblyDescription("The mod adds all the vehicles from GTA Online into GTA 5")]
+[assembly: AssemblyDescription("This SHVDN script makes GTA Online-only vehicles appear across GTAV map.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nilax Inc.")]
 [assembly: AssemblyProduct("All MP Vehicles in SP")]
-[assembly: AssemblyCopyright("Copyright ©  2024")]
+[assembly: AssemblyCopyright("© 2023-2025")]
 [assembly: AssemblyTrademark("Mods by andre500")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номер сборки и номер редакции по умолчанию.
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.9.0")]
-[assembly: AssemblyFileVersion("2.0.9.0")]
+[assembly: AssemblyVersion("3.0.4")]
+[assembly: AssemblyFileVersion("3.0.4")]
