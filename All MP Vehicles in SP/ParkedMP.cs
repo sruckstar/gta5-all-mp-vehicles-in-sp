@@ -21,6 +21,7 @@ public class SpawnMP : Script
     private float[] angle = new float[1];
     private GTA.Vehicle car;
     private int tuning_flag;
+    private int tuning_hsw_flag;
     private int blip_color;
     private int mod_plate;
     private int plate_id = -1;
@@ -187,6 +188,7 @@ public class SpawnMP : Script
     private const int titan2 = 148;
     private const int hsw = 149;
     private const int heli_higgins = 150;
+    private const int weapon_ignus2 = 151;
 
     private List<Vector3> coords = new List<Vector3>()
     {
@@ -341,6 +343,7 @@ public class SpawnMP : Script
         new Vector3(-2078.637f, 2931.623f, 33.99109f),
         new Vector3(792.5626f, -1862.284f, 28.52566f),
         new Vector3(-744.5989f, -1467.786f, 5.675299f),
+        new Vector3(-1864.326f, 3225.93f, 32.17207f),
 
 };
 
@@ -497,6 +500,7 @@ public class SpawnMP : Script
         58.04224f,
         167.2133f,
         -40.04208f,
+        327.426f,
 
 };
 
@@ -512,6 +516,7 @@ public class SpawnMP : Script
         doors_config = config.GetValue<int>("MAIN", "doors", -1);
         blip_config = config.GetValue<int>("MAIN", "blips", -1); 
         tuning_flag = config.GetValue<int>("MAIN", "tuning", -1);
+        tuning_hsw_flag = config.GetValue<int>("MAIN", "tuning_hsw", -1);
         mod_plate = config.GetValue<int>("MAIN", "new_license_plates", -1);
         blip_color = config.GetValue<int>("MAIN", "blip_color", -1);
         debugging = config.GetValue<int>("MAIN", "show_errors", 0);
@@ -519,6 +524,7 @@ public class SpawnMP : Script
         if (doors_config == -1) config.SetValue<int>("MAIN", "doors", 1);
         if (blip_config == -1) config.SetValue<int>("MAIN", "blips", 1);
         if (tuning_flag == -1) config.SetValue<int>("MAIN", "tuning", 1);
+        if (tuning_hsw_flag == -1) config.SetValue<int>("MAIN", "tuning_hsw", 1);
         if (mod_plate == -1) config.SetValue<int>("MAIN", "doors", 0);
         if (blip_color == -1) config.SetValue<int>("MAIN", "blip_color", 3);
 
@@ -1349,6 +1355,14 @@ public class SpawnMP : Script
                     model_name = VehList.models_higgins[random.Next(VehList.models_higgins.Count)];
                 }
                 break;
+
+            case weapon_ignus2:
+                isEmpty = !VehList.models_ignus2.Any();
+                if ((veh[index_db] == null && !isEmpty) || type == 1)
+                {
+                    model_name = VehList.models_ignus2[random.Next(VehList.models_ignus2.Count)];
+                }
+                break;
         }
         return model_name;
     }
@@ -1430,7 +1444,7 @@ public class SpawnMP : Script
                 }
             }
 
-            if (IsHSW)
+            if (tuning_hsw_flag == 1 && IsHSW)
             {
                 Function.Call(Hash.SET_VEHICLE_MOD, car, 36, 0, 0); //HSW Base
                 Function.Call(Hash.SET_VEHICLE_MOD, car, 34, 2, 0); //HSW Turbo

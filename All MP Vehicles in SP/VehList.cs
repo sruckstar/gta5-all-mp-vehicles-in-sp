@@ -679,4 +679,8 @@ public class VehList
     public static List<string> models_higgins = new List<string>() {
     "maverick2",
     };
+
+    public static List<string> models_ignus2 = new List<string>() {
+    "ignus2",
+    };
 }
