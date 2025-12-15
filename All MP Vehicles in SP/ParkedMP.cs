@@ -30,7 +30,8 @@ public class SpawnMP : Script
     private Vehicle[] street_veh = new Vehicle[200];
     private List<Blip> marker = new List<Blip>();
     private int debugging = 0;
-    private string mod_version = "1.71";
+    private int _canSpawn = 1;
+    private string mod_version = "1.72";
 
     //Coords
     private const int arena = 0;
@@ -513,6 +514,7 @@ public class SpawnMP : Script
         }
 
         config = ScriptSettings.Load("Scripts\\AllMpVehiclesInSp.ini");
+        _canSpawn = config.GetValue<int>("MAIN", "parking_lots_spawn", 1);
         doors_config = config.GetValue<int>("MAIN", "doors", -1);
         blip_config = config.GetValue<int>("MAIN", "blips", -1); 
         tuning_flag = config.GetValue<int>("MAIN", "tuning", -1);
@@ -1491,6 +1493,9 @@ public class SpawnMP : Script
 
     void OnTick(object sender, EventArgs e)
     {
+
+        if (_canSpawn == 0)
+            return;
 
         if (vehicles_spawned == 1 && (Function.Call<bool>(Hash.GET_MISSION_FLAG) || Function.Call<bool>(Hash.IS_CUTSCENE_PLAYING)))
         {

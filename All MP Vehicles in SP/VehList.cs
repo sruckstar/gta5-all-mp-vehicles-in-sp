@@ -125,6 +125,7 @@ public class VehList
     "boxville4",
     "flatbed2",
     "stockade4",
+    "keitora",
 
     };
 
@@ -340,6 +341,8 @@ public class VehList
     "riot2",
     "polgauntlet",
     "police5",
+    "polbuffalo",
+    "polbuffalo6",
     };
 
     public static List<string> models_police_traffic = new List<string>() {
@@ -373,6 +376,7 @@ public class VehList
     "chavosv6",
     "hardy",
     "minimus",
+    "sentinel6",
 
     };
 
@@ -479,6 +483,9 @@ public class VehList
     "cheetah3",
     "rapidgt4",
     "sentinel5",
+    "astrale",
+    "gt750",
+    "itali2",
     };
 
     public static List<string> models_submarine = new List<string>() {
@@ -533,7 +540,9 @@ public class VehList
     "pipistrello",
     "cyclone2",
     "suzume",
-
+    "fmj2",
+    "luiva",
+    "xtreme",
     };
 
     public static List<string> models_suvs = new List<string>() {
@@ -666,7 +675,6 @@ public class VehList
     "entity3",
     "vigero2",
     "arbitergt",
-    "arbitergt", //Replace with "ignus2" in the future
     "turismo2",
     "sentinel",
     "banshee",
@@ -682,5 +690,16 @@ public class VehList
 
     public static List<string> models_ignus2 = new List<string>() {
     "ignus2",
+    };
+
+    public static List<string> models_latest = new List<string>() {
+    "astrale",
+    "fmj2",
+    "gt750",
+    "itali2",
+    "keitora",
+    "luiva",
+    "sentinel6",
+    "xtreme",
     };
 }
