@@ -40,6 +40,7 @@ You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder)
 0 - disable
 1 - enable
 
+- `parking_lots_spawn` - spawning of cars in parking lots
 - `doors` - enable locking the parked DLC vehicle's doors. If enabled, the player will have to break a window or lockpick it (depending on the vehicle) to enter.
 - `blips` - enable or disable parked DLC car blips on the map.
 - `tuning` - if enabled, spawned DLC cars will receive random tuning items.
