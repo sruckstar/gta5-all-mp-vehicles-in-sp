@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
+using System.Linq; 
 using GTA;
 using GTA.Math;
 using GTA.Native;
@@ -15,8 +16,8 @@ public class TrafficMP : Script
     private int _nextSpawnTime = 0;
     private int _nextSearchTime = 0;
 
-    private const float SpawnDistance = 120.0f;
-    private const float DespawnDistance = 300.0f;
+    private float SpawnDistance = 300.0f;
+    private float DespawnDistance = 500.0f;
     private int RespawnDelayMs = 3000;
     private const int SearchIntervalMs = 500;
 
@@ -24,12 +25,29 @@ public class TrafficMP : Script
     private int _trafficBlipConfig;
     private int _streetFlag;
 
+    public static int disableTaxiFlag;
+
     private int _spawnSequenceIndex = 0;
     private Random _rnd = new Random();
 
     private HashSet<int> _dlcModelHashes = new HashSet<int>();
-
     private int _lastPlayerVehicleHandle = 0;
+
+    // Список кодов богатых районов
+    private HashSet<string> _richZones = new HashSet<string>
+    {
+        "RICHM",  // Richman
+        "RGLEN",  // Richman Glen
+        "ROCKF",  // Rockford Hills
+        "VINE",   // Vinewood
+        "DTVINE", // Downtown Vinewood
+        "WVINE",  // West Vinewood
+        "CHIL",   // Vinewood Hills
+        "PBLUFF", // Pacific Bluffs
+        "GOLF",   // GWC and Golfing Society
+        "MORN",   // Morningwood
+        "OBSERV"  // Galileo Observatory
+    };
 
     public TrafficMP()
     {
@@ -41,6 +59,9 @@ public class TrafficMP : Script
         _trafficBlipConfig = config.GetValue<int>("MAIN", "traffic_cars_blips", 0);
         _streetFlag = config.GetValue<int>("MAIN", "spawn_traffic", 1);
         RespawnDelayMs = config.GetValue<int>("MAIN", "time_traffic_gen", 3000);
+
+        SpawnDistance = config.GetValue<float>("ADVANCED", "SpawnDistance", 300.0f);
+        DespawnDistance = config.GetValue<float>("ADVANCED", "DespawnDistance", 500.0f);
 
         BuildDlcCache();
     }
@@ -77,17 +98,7 @@ public class TrafficMP : Script
 
         Ped player = Game.Player.Character;
 
-        if (_driver != null && _driver.Exists())
-        {
-            if (_spawnedVehicle != null && _spawnedVehicle.Exists())
-            {
-                if (!_driver.IsInVehicle(_spawnedVehicle))
-                {
-                    _driver.Delete();
-                }
-            }
-        }
-
+        // Логика DLC авто
         if (player.IsInVehicle())
         {
             Vehicle playerVeh = player.CurrentVehicle;
@@ -96,7 +107,6 @@ public class TrafficMP : Script
             {
                 if (IsDlcVehicle(playerVeh))
                 {
-
                     if (_spawnedVehicle != null || (_trafficBlip != null && _trafficBlip.Exists()))
                     {
                         ReleaseCurrentGhost();
@@ -107,7 +117,6 @@ public class TrafficMP : Script
                         _nextSpawnTime = Game.GameTime + RespawnDelayMs;
                     }
                 }
-
                 _lastPlayerVehicleHandle = playerVeh.Handle;
             }
         }
@@ -116,15 +125,16 @@ public class TrafficMP : Script
             _lastPlayerVehicleHandle = 0;
         }
 
+        // Логика удаления по дистанции
         if (_spawnedVehicle != null && _spawnedVehicle.Exists())
         {
             if (player.Position.DistanceTo(_spawnedVehicle.Position) > DespawnDistance)
             {
-                CleanUp(); 
+                CleanUp();
                 _nextSpawnTime = Game.GameTime + RespawnDelayMs;
             }
         }
-
+        // Логика спавна
         else if (Game.GameTime >= _nextSpawnTime)
         {
             if (Game.GameTime >= _nextSearchTime)
@@ -185,7 +195,8 @@ public class TrafficMP : Script
             {
                 try
                 {
-                    string modelToSpawn = GetNextModelName();
+                    // Передаем позицию спавна для проверки зоны
+                    string modelToSpawn = GetNextModelName(spawnNodePos);
                     SpawnGhostCar(spawnNodePos, spawnNodeHeading, modelToSpawn);
                 }
                 catch (Exception ex)
@@ -196,7 +207,8 @@ public class TrafficMP : Script
         }
     }
 
-    private string GetNextModelName()
+    // Обновлен: принимает позицию для проверки зоны
+    private string GetNextModelName(Vector3 spawnPos)
     {
         if (_spawnSequenceIndex == 0)
         {
@@ -207,11 +219,14 @@ public class TrafficMP : Script
         }
         else if (_spawnSequenceIndex == 1)
         {
-            return "vivanite2";
+            if (disableTaxiFlag == 1)
+                return GetModelFromContext(spawnPos);
+            else
+                return "vivanite2";
         }
         else
         {
-            return GetModelFromContext();
+            return GetModelFromContext(spawnPos);
         }
     }
 
@@ -220,26 +235,60 @@ public class TrafficMP : Script
         if (_spawnSequenceIndex == 0) _spawnSequenceIndex = 1;
         else if (_spawnSequenceIndex == 1) _spawnSequenceIndex = 2;
         else if (_spawnSequenceIndex == 2) _spawnSequenceIndex = 3;
-        else if (_spawnSequenceIndex == 3) _spawnSequenceIndex = 1;
+        else if (_spawnSequenceIndex == 3) _spawnSequenceIndex = 4;
+        else if (_spawnSequenceIndex == 4) _spawnSequenceIndex = 5;
+        else if (_spawnSequenceIndex == 5) _spawnSequenceIndex = 6;
+        else if (_spawnSequenceIndex == 6) _spawnSequenceIndex = 7;
+        else if (_spawnSequenceIndex == 7) _spawnSequenceIndex = 8;
+        else if (_spawnSequenceIndex == 8) _spawnSequenceIndex = 9;
+        else if (_spawnSequenceIndex == 9) _spawnSequenceIndex = 1;
     }
 
-    private string GetModelFromContext()
+    private string GetModelFromContext(Vector3 position)
     {
-        Vehicle[] nearbyVehs = World.GetNearbyVehicles(Game.Player.Character.Position, 100.0f);
+        // 1. Определяем зону в точке спавна
+        string zoneName = Function.Call<string>(Hash.GET_NAME_OF_ZONE, position.X, position.Y, position.Z);
+        bool isRichZone = _richZones.Contains(zoneName);
+
         int vclass = 0;
 
-        if (nearbyVehs.Length > 0)
+        if (isRichZone)
         {
-            Vehicle randomNeighbor = nearbyVehs[_rnd.Next(nearbyVehs.Length)];
-            if (randomNeighbor.Exists()) vclass = (int)randomNeighbor.ClassType;
-            else vclass = _rnd.Next(0, 14);
+            // БОГАТАЯ ЗОНА: Только Super (7) или SportClassic (5, 6)
+            int[] richClasses = { 5, 6, 7 };
+            vclass = richClasses[_rnd.Next(richClasses.Length)];
         }
         else
         {
-            vclass = _rnd.Next(0, 14);
-        }
+            // ОБЫЧНАЯ ЗОНА: Исключаем 5, 6, 7
 
-        if (vclass > 13) vclass = _rnd.Next(0, 14);
+            // Пытаемся найти машину рядом с игроком
+            Vehicle[] nearbyVehs = World.GetNearbyVehicles(Game.Player.Character.Position, 100.0f);
+            bool foundValid = false;
+
+            if (nearbyVehs.Length > 0)
+            {
+                Vehicle randomNeighbor = nearbyVehs[_rnd.Next(nearbyVehs.Length)];
+                if (randomNeighbor.Exists())
+                {
+                    int c = (int)randomNeighbor.ClassType;
+                    // Если класс машины допустим для бедной зоны (не 5,6,7 и валиден)
+                    if (c != 5 && c != 6 && c != 7 && c <= 13)
+                    {
+                        vclass = c;
+                        foundValid = true;
+                    }
+                }
+            }
+
+            // Если рядом ничего нет или попалась богатая машина, генерируем случайный "бедный" класс
+            if (!foundValid)
+            {
+                // Допустимые классы для обычных зон
+                int[] poorClasses = { 0, 1, 2, 3, 4, 8, 9, 10, 11, 12, 13 };
+                vclass = poorClasses[_rnd.Next(poorClasses.Length)];
+            }
+        }
 
         string model_name = "vivanite2";
 

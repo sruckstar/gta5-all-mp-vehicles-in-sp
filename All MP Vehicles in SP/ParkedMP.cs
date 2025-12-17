@@ -684,6 +684,8 @@ public class SpawnMP : Script
 
             if (VehList.models_higgins.Contains(hash))
                 VehList.models_higgins.Remove(hash);
+
+            if (hash == "vivanite2") TrafficMP.disableTaxiFlag = 1;
         }
 
         Tick += OnTick;
@@ -1403,7 +1405,7 @@ public class SpawnMP : Script
                 Random rnd = new Random();
                 int num;
                 int modindex;
-                for (int a = 0; a <= 3; a++)
+                /*/for (int a = 0; a <= 3; a++)
                 {
                     mode_type[a] = rnd.Next(0, 17);
                     num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, mode_type[a]);
@@ -1424,7 +1426,7 @@ public class SpawnMP : Script
                     num = Function.Call<int>(Hash.GET_NUM_VEHICLE_MODS, car, 23);
                     modindex = rnd.Next(0, num + 1);
                     Function.Call(Hash.SET_VEHICLE_MOD, car, 23, modindex, true);
-                }
+                }/*/
                 int choose = rnd.Next(1, 3);
                 if (choose == 1)
                 {
