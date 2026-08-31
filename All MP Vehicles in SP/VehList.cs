@@ -14,6 +14,17 @@ using System.IO;
 
 public class VehList
 {
+    // Model names registered from Scripts\NewVehiclesList.txt (add-on vehicles).
+    // Filled by SpawnMP.AddCustomVehicle, read by TrafficMP so it can tell add-ons
+    // apart from stock DLC models no matter which script initialises first.
+    public static readonly HashSet<string> addon_models =
+        new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    // Set by SpawnMP once NewVehiclesList.txt and mp_blacklist.txt have been applied.
+    // TrafficMP waits for this before building its model cache, otherwise the two
+    // Script instances race and traffic never sees the add-ons or the blacklist.
+    public static bool lists_ready = false;
+
     public static List<string> models_arena = new List<string>() {
     "boxville5",
     "zr380",

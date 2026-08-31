@@ -50,3 +50,31 @@ You can edit the `AllMpVehiclesInSp.ini` file (located in your `scripts` folder)
 - `blip_color` - set the color of car tags in parking lots (values from 0 to 85, [click here](https://docs.fivem.net/docs/game-references/blips/#blip-colors) to see what numbers are what colors)
 - `blip_color_traffic` - set the color of car labels in traffic (values from 0 to 85, [click here](https://docs.fivem.net/docs/game-references/blips/#blip-colors) to see what numbers are what colors)
 - `time_traffic_gen` - the time in milliseconds between cars being spawned in traffic (minimum value is 3000, default is 8000)
+- `tuning_hsw` - if enabled, HSW vehicles will spawn with their HSW upgrades installed.
+- `random_colors` - if enabled, spawned DLC cars will receive a random paint job.
+- `max_traffic_vehicles` - how many DLC cars may be in traffic at the same time (1-10, default is 3). Lower this if you get frame drops in dense traffic.
+- `show_errors` - enable diagnostic notifications (unknown add-on classes, models that fail to load, traffic spawn errors). Off by default; turn it on before reporting a bug.
+
+## Advanced settings
+
+These live in the `[ADVANCED]` section of the same file. The defaults suit most setups - change them only if you have a reason to.
+
+- `SpawnDistance` - how far ahead of the player DLC traffic is spawned, in metres (default 300). **If DLC cars seem to appear "on the other side of the map", lower this** (50-100 works well).
+- `DespawnDistance` - how far from the player a DLC traffic car is removed, in metres (default 500). Keep it comfortably above `SpawnDistance`; around 100 pairs well with a `SpawnDistance` of 50.
+- `ClearSpawnArea` - if enabled, existing traffic is cleared out of the spot before a DLC car is placed there. Makes spawns more reliable at the cost of occasionally removing a car in front of you.
+- `addon_vehicles_in_traffic` - allow add-on vehicles from `NewVehiclesList.txt` to appear in **traffic** (default 0, off). Add-ons still spawn in parking lots either way. This is off by default because many add-on models ship without complete handling or seat data and can crash the game once the AI tries to drive them - enable it only if your add-ons are known to work.
+
+# Notes and known behaviour
+
+- **The mod is disabled during story missions.** This is intentional: spawning extra vehicles during scripted missions could break them or crash the game. Vehicles return a few seconds after the mission ends.
+- **To hide the "Unique vehicle" blips**, set `blips` to 0 for parked cars and `traffic_cars_blips` to 0 for traffic cars.
+- **A newer game version than the mod expects is fine.** The mod only warns when your game is genuinely *older* than the version it was built for; a newer game simply may contain vehicles the mod does not list yet.
+
+# Reporting a problem
+
+Before reporting a crash or a missing feature, please check the following - these account for most reports:
+
+1. **Update ScriptHookV and ScriptHookVDotNet.** An outdated ScriptHookVDotNet is the single most common cause of the mod failing to load. Use a current [nightly](https://github.com/scripthookvdotnet/scripthookvdotnet-nightly/releases) build.
+2. **Set `show_errors` to 1** in `AllMpVehiclesInSp.ini` and reproduce the problem, so the mod can tell you which model or setting is at fault.
+3. **Include your `ScriptHookVDotNet.log` and `ScriptHookV.log`** (both in your main GTA V folder). A crash report without a log usually cannot be acted on.
+4. **If you use add-on vehicles,** try setting `addon_vehicles_in_traffic` to 0 and see whether the problem goes away.

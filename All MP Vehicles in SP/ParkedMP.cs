@@ -60,8 +60,10 @@ public class SpawnMP : Script
     private int plate_id = -1;
     private bool IsHSW = false;
     private Vehicle[] veh = new Vehicle[200];
-    private bool[] _claimed = new bool[200];   
-    private List<Blip> marker = new List<Blip>();
+    private bool[] _claimed = new bool[200];
+    // Blips tracked per slot rather than in a flat list, so a blip can be removed even
+    // when its vehicle was destroyed by the game and GET_BLIP_FROM_ENTITY no longer works.
+    private Blip[] _slotBlip = new Blip[200];
     private int debugging = 0;
     private int _canSpawn = 1;
     private string mod_version = "1.73";
@@ -71,7 +73,24 @@ public class SpawnMP : Script
 
     private const int MissionGraceMs = 5000;
 
-    private const int MaxSpawnAttemptsPerTick = 2;
+    private const int MaxSpawnAttemptsPerTick = 1;
+
+    private const float SpawnRadius = 300f;
+
+    // The 152-coord sweep only needs redoing when the player has actually moved, or
+    // periodically as a safety net. Running it every tick was a measurable hitch.
+    private const float RescanMoveDistance = 25f;
+    private const int RescanIntervalMs = 1000;
+    private Vector3 _lastScanPosition = Vector3.Zero;
+    private int _nextScanTime = 0;
+    private bool _forceRescan = true;
+
+    // Model.Request blocks the script thread. Cap the wait per tick and remember models
+    // that never stream in so a bad add-on cannot stall every tick forever.
+    private const int ModelRequestTimeoutMs = 250;
+    private const int ModelRequestMaxWaitMs = 5000;
+    private readonly Dictionary<string, int> _modelWaitMs = new Dictionary<string, int>();
+    private readonly HashSet<string> _badModels = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     private static readonly Random _rnd = new Random();
 
@@ -424,6 +443,7 @@ public class SpawnMP : Script
         catch (Exception ex)
         {
             _canSpawn = 0;
+            VehList.lists_ready = true;   // don't leave TrafficMP waiting on a failed init
             Notifier.Show("~r~All MP Vehicles in SP:~w~ init error: " + ex.Message);
         }
 
@@ -434,7 +454,11 @@ public class SpawnMP : Script
     private void Initialize()
     {
         string onlineVersion = Function.Call<string>(Hash.GET_ONLINE_VERSION);
-        if (onlineVersion != mod_version)
+
+        // Compare numerically and only warn when the game is genuinely OLDER. A plain
+        // string mismatch also fired on newer games, which is where the "update your mod"
+        // reports came from - a newer game is fine, it just may add vehicles we don't list.
+        if (IsGameOlderThan(onlineVersion, mod_version))
         {
             Notifier.Show("~r~WARNING:\n~s~Your version of the game is out of date. ~g~All MP Vehicles in SP ~s~will not be able to load vehicles from new updates.\n\nRequired Game Version:\n" + mod_version + "\nYour Game Version: " + onlineVersion);
         }
@@ -461,8 +485,45 @@ public class SpawnMP : Script
         config.Save();
 
         BuildIndexMaps();
-        LoadCustomVehicles();
-        ApplyBlacklist();
+
+        try
+        {
+            LoadCustomVehicles();
+            ApplyBlacklist();
+        }
+        finally
+        {
+            // TrafficMP blocks on this flag; never leave it unset or traffic stays dead.
+            VehList.lists_ready = true;
+        }
+    }
+
+    /// <summary>
+    /// Compares dotted version strings ("1.73", "1.7.3") component by component.
+    /// Returns true only when <paramref name="actual"/> is strictly older than
+    /// <paramref name="required"/>; an unparseable version is treated as up to date.
+    /// </summary>
+    private static bool IsGameOlderThan(string actual, string required)
+    {
+        if (string.IsNullOrEmpty(actual) || string.IsNullOrEmpty(required)) return false;
+        if (actual == required) return false;
+
+        string[] a = actual.Split('.');
+        string[] r = required.Split('.');
+        int len = Math.Max(a.Length, r.Length);
+
+        for (int i = 0; i < len; i++)
+        {
+            int av = 0, rv = 0;
+
+            if (i < a.Length && !int.TryParse(a[i], out av)) return false;
+            if (i < r.Length && !int.TryParse(r[i], out rv)) return false;
+
+            if (av < rv) return true;
+            if (av > rv) return false;
+        }
+
+        return false;
     }
 
     private void LoadCustomVehicles()
@@ -628,7 +689,14 @@ public class SpawnMP : Script
             case "super": VehList.models_supers.Add(Model); break;
             case "suvs": VehList.models_suvs.Add(Model); break;
             case "vans": VehList.models_vans.Add(Model); break;
+
+            default:
+                if (debugging == 1)
+                    Notifier.Show("~y~NewVehiclesList.txt:~w~ unknown class \"" + Class + "\" for \"" + Model + "\"");
+                return;
         }
+
+        VehList.addon_models.Add(Model);
     }
 
     string GenerateVehicleModelName(int index_db)
@@ -666,20 +734,47 @@ public class SpawnMP : Script
 
     Vehicle CreateNewVehicle(string hash, Vector3 pos, float heading)
     {
+        if (_badModels.Contains(hash)) return null;
+
         var veh_model = new Model(hash);
 
-        if (!veh_model.IsValid || !veh_model.IsInCdImage) return null;
-
-        if (!veh_model.Request(2000))
+        if (!veh_model.IsValid || !veh_model.IsInCdImage)
         {
+            _badModels.Add(hash);
+            return null;
+        }
+
+        // A single Request(2000) froze the script thread for up to two seconds, which is
+        // what users saw as a periodic stutter. Wait a short slice per tick instead and
+        // resume on the next one; give up on the model once the total wait is unreasonable.
+        if (!veh_model.IsLoaded && !veh_model.Request(ModelRequestTimeoutMs))
+        {
+            int waited;
+            _modelWaitMs.TryGetValue(hash, out waited);
+            waited += ModelRequestTimeoutMs;
+
+            if (waited >= ModelRequestMaxWaitMs)
+            {
+                _modelWaitMs.Remove(hash);
+                _badModels.Add(hash);
+                if (debugging == 1)
+                    Notifier.Show("~y~All MP Vehicles in SP:~w~ model \"" + hash + "\" failed to stream in.");
+            }
+            else
+            {
+                _modelWaitMs[hash] = waited;
+            }
+
             veh_model.MarkAsNoLongerNeeded();
             return null;
         }
 
+        _modelWaitMs.Remove(hash);
+
         Vehicle newCar = World.CreateVehicle(veh_model, pos, heading);
         veh_model.MarkAsNoLongerNeeded();
 
-        if (newCar == null) return null;
+        if (newCar == null || !newCar.Exists()) return null;
 
         if (doors_config == 1)
         {
@@ -742,16 +837,27 @@ public class SpawnMP : Script
         return mark;
     }
 
+    /// <summary>
+    /// Removes the blip belonging to a slot. Works from the tracked handle, so it still
+    /// cleans up when the vehicle itself has already been destroyed by the game -
+    /// GET_BLIP_FROM_ENTITY needs a live entity and used to leave those blips behind.
+    /// </summary>
+    void ReleaseSlotBlip(int index)
+    {
+        if (index < 0 || index >= _slotBlip.Length) return;
+
+        Blip mark = _slotBlip[index];
+        _slotBlip[index] = null;
+
+        if (mark != null && mark.Exists()) mark.Delete();
+    }
+
     void DeleteBlipOf(Vehicle car)
     {
         if (car == null || !car.Exists()) return;
 
         Blip mark = Function.Call<Blip>(Hash.GET_BLIP_FROM_ENTITY, car);
-        if (mark != null && mark.Exists())
-        {
-            marker.Remove(mark);
-            mark.Delete();
-        }
+        if (mark != null && mark.Exists()) mark.Delete();
     }
 
     private bool IsRestrictedGameState()
@@ -774,7 +880,13 @@ public class SpawnMP : Script
         for (int i = 0; i < veh.Length; i++)
         {
             Vehicle car = veh[i];
-            if (car == null) continue;
+            if (car == null)
+            {
+                ReleaseSlotBlip(i);   // slot may still hold a blip from a car the game removed
+                continue;
+            }
+
+            ReleaseSlotBlip(i);
 
             if (car.Exists())
             {
@@ -793,21 +905,21 @@ public class SpawnMP : Script
 
             veh[i] = null;
         }
+
+        _forceRescan = true;
     }
 
     void OnAborded(object sender, EventArgs e)
     {
-        foreach (Blip mark in marker)
-        {
-            if (mark != null && mark.Exists())
-                mark.Delete();
-        }
-        marker.Clear();
+        for (int i = 0; i < _slotBlip.Length; i++) ReleaseSlotBlip(i);
 
         foreach (Vehicle car in veh)
         {
             if (car != null && car.Exists())
+            {
+                DeleteBlipOf(car);
                 car.Delete();
+            }
         }
     }
 
@@ -837,6 +949,35 @@ public class SpawnMP : Script
         Ped player = Game.Player.Character;
         Vector3 position = player.Position;
 
+        // Runs every tick: the player entering one of our cars has to be noticed at once,
+        // otherwise its blip lingers and we may delete a car under the player.
+        for (int i = 0; i < veh.Length; i++)
+        {
+            Vehicle entered = veh[i];
+            if (entered != null && entered.Exists() && player.IsInVehicle(entered))
+            {
+                ReleaseSlotBlip(i);
+                DeleteBlipOf(entered);
+                entered.MarkAsNoLongerNeeded();
+                veh[i] = null;
+                _claimed[i] = true;
+                _forceRescan = true;
+            }
+        }
+
+        // Sweeping all 152 parking spots on every tick was pure overhead: the result only
+        // changes when the player moves. Re-scan on movement, on a slow timer, or when a
+        // spawn/despawn has just changed the picture.
+        bool scanNow = _forceRescan
+                       || Game.GameTime >= _nextScanTime
+                       || position.DistanceTo(_lastScanPosition) >= RescanMoveDistance;
+
+        if (!scanNow) return;
+
+        _forceRescan = false;
+        _lastScanPosition = position;
+        _nextScanTime = Game.GameTime + RescanIntervalMs;
+
         int spawnAttemptsThisTick = 0;
 
         for (int i = 0; i < coords.Count; i++)
@@ -845,7 +986,7 @@ public class SpawnMP : Script
             if (veh[i] != null || _claimed[i]) continue;
 
             Vector3 veh_coords = coords[i];
-            if (position.DistanceTo(veh_coords) >= 300f) continue;
+            if (position.DistanceTo(veh_coords) >= SpawnRadius) continue;
 
             string model_name = GenerateVehicleModelName(i);
             if (model_name == null) continue;
@@ -856,14 +997,14 @@ public class SpawnMP : Script
             if (newCar == null) continue;
 
             veh[i] = newCar;
+            // Keep scanning on the next tick so a cluster of empty spots fills promptly
+            // instead of one spot per rescan interval.
+            _forceRescan = true;
             SetNumberPlate(newCar, mod_plate, plate_id);
             plate_id = -1;
 
             if (blip_config == 1)
-            {
-                Blip mark = CreateMarkerAboveCar(newCar);
-                marker.Add(mark);
-            }
+                _slotBlip[i] = CreateMarkerAboveCar(newCar);
 
             //Optional mods (livery, colors, etc.)
             switch (model_name)
@@ -884,30 +1025,31 @@ public class SpawnMP : Script
             }
         }
 
-        for (int i = 0; i < veh.Length; i++)
-        {
-            Vehicle car = veh[i];
-            if (car != null && car.Exists() && player.IsInVehicle(car))
-            {
-                DeleteBlipOf(car);
-                car.MarkAsNoLongerNeeded();
-                veh[i] = null;
-                _claimed[i] = true; 
-            }
-        }
-
         for (int i = 0; i < coords.Count; i++)
         {
-            if (position.DistanceTo(coords[i]) <= 300f) continue;
+            Vehicle car = veh[i];
 
-            if (veh[i] != null)
+            // A car destroyed by the game (blown up, cleaned up by the engine, wrecked in
+            // a mission) leaves its slot pointing at a dead handle and its blip orphaned -
+            // that is the "blip with no vehicle" users reported. Reclaim the slot wherever
+            // the vehicle is gone, not only when we are the ones deleting it.
+            if (car != null && !car.Exists())
             {
-                if (veh[i].Exists())
-                {
-                    DeleteBlipOf(veh[i]);
-                    veh[i].Delete();
-                }
+                ReleaseSlotBlip(i);
                 veh[i] = null;
+                _forceRescan = true;
+                continue;
+            }
+
+            if (position.DistanceTo(coords[i]) <= SpawnRadius) continue;
+
+            if (car != null)
+            {
+                DeleteBlipOf(car);
+                ReleaseSlotBlip(i);
+                car.Delete();
+                veh[i] = null;
+                _forceRescan = true;
             }
 
             _claimed[i] = false;

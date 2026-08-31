@@ -34,6 +34,24 @@ public class TrafficMP : Script
     private int _streetFlag;
     private int _maxVehicles;
     private int _clearAreaFlag;
+    private int _addonsInTraffic;
+    private int _debugging;
+
+    // The DLC cache can only be built once SpawnMP has applied NewVehiclesList.txt and
+    // mp_blacklist.txt, which happens in a different Script instance with no ordering
+    // guarantee. Build it lazily on the first tick that finds the lists ready.
+    private bool _cacheBuilt = false;
+    private int _cacheWaitDeadline = 0;
+    private const int CacheWaitTimeoutMs = 30000;
+
+    // Spawn failures used to spam the ticker once per attempt; keep one message per window.
+    private int _nextSpawnErrorTime = 0;
+    private const int SpawnErrorCooldownMs = 30000;
+    private string _lastSpawnError;
+
+    // Models that failed to spawn are not retried - a broken add-on would otherwise be
+    // picked again every few seconds and crash the game on the next attempt.
+    private readonly HashSet<string> _badModels = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public static int disableTaxiFlag;
 
@@ -87,13 +105,43 @@ public class TrafficMP : Script
 
             _clearAreaFlag = config.GetValue<int>("ADVANCED", "ClearSpawnArea", 0);
 
-            BuildDlcCache();
+            // Add-on cars in traffic are experimental: many add-ons ship without proper
+            // handling/layout data and crash the game once a driver is put in them.
+            // Off by default; parking-lot spawns are unaffected.
+            // Not written back to the .ini: SpawnMP owns saving that file and both scripts
+            // load it concurrently, so a save from here could clobber its defaults.
+            _addonsInTraffic = config.GetValue<int>("ADVANCED", "addon_vehicles_in_traffic", 0);
+
+            _debugging = config.GetValue<int>("MAIN", "show_errors", 0);
+
+            // Cache build is deferred to OnTick - see _cacheBuilt / EnsureDlcCache.
         }
         catch (Exception ex)
         {
             _streetFlag = 0;
             Notifier.Show("~r~TrafficMP init error:~w~ " + ex.Message);
         }
+    }
+
+    /// <summary>
+    /// Builds the DLC model cache once SpawnMP has finished loading NewVehiclesList.txt
+    /// and mp_blacklist.txt. Returns false while still waiting.
+    /// </summary>
+    private bool EnsureDlcCache()
+    {
+        if (_cacheBuilt) return true;
+
+        if (_cacheWaitDeadline == 0)
+            _cacheWaitDeadline = Game.GameTime + CacheWaitTimeoutMs;
+
+        // Wait for SpawnMP, but never forever: if that script is disabled or errored out
+        // we still want traffic, just without add-on/blacklist awareness.
+        if (!VehList.lists_ready && Game.GameTime < _cacheWaitDeadline)
+            return false;
+
+        _cacheBuilt = true;
+        BuildDlcCache();
+        return true;
     }
 
     private void BuildDlcCache()
@@ -120,6 +168,48 @@ public class TrafficMP : Script
         {
             Notifier.Show("~r~TrafficMP Cache Error:~w~ " + ex.Message);
         }
+    }
+
+    private const string FallbackModel = "vivanite2";
+
+    private static bool IsFallbackModel(string modelName)
+    {
+        return string.Equals(modelName, FallbackModel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// True when the model must not be used for traffic: a known-bad model, or an add-on
+    /// while addon_vehicles_in_traffic is off. The fallback model is never excluded -
+    /// excluding it would leave the spawner with nothing to fall back to.
+    /// </summary>
+    private bool IsModelExcluded(string modelName)
+    {
+        if (string.IsNullOrEmpty(modelName)) return true;
+        if (IsFallbackModel(modelName)) return false;
+        if (_badModels.Contains(modelName)) return true;
+        if (_addonsInTraffic != 1 && VehList.addon_models.Contains(modelName)) return true;
+        return false;
+    }
+
+    /// <summary>Marks a model as unusable so it is not picked again this session.</summary>
+    private void MarkModelBad(string modelName)
+    {
+        if (string.IsNullOrEmpty(modelName) || IsFallbackModel(modelName)) return;
+        _badModels.Add(modelName);
+    }
+
+    /// <summary>
+    /// Ticker spam guard: TrafficMP used to post one notification per failed spawn attempt,
+    /// which is every few seconds when an add-on is broken.
+    /// </summary>
+    private void ReportSpawnError(string message)
+    {
+        if (_debugging != 1) return;
+        if (message == _lastSpawnError && Game.GameTime < _nextSpawnErrorTime) return;
+
+        _lastSpawnError = message;
+        _nextSpawnErrorTime = Game.GameTime + SpawnErrorCooldownMs;
+        Notifier.Show("~r~TrafficMP Spawn Error:~w~ " + message);
     }
 
     private bool IsRestrictedGameState()
@@ -156,6 +246,8 @@ public class TrafficMP : Script
         }
 
         if (Game.GameTime < _resumeSpawnTime) return;
+
+        if (!EnsureDlcCache()) return;
 
         Ped player = Game.Player.Character;
 
@@ -302,28 +394,41 @@ public class TrafficMP : Script
         {
             Function.Call(Hash.CLEAR_AREA_OF_VEHICLES, spawnPos.X, spawnPos.Y, spawnPos.Z, 6.0f, false, false, false, false, false);
         }
-        else
+
+        // One 25m sweep answers both the occupancy test (<=7m) and the crowding test
+        // (<=25m); this used to be two separate World.GetNearbyVehicles calls.
+        bool crowded = false;
+        Vehicle[] around = World.GetNearbyVehicles(spawnPos, 25.0f);
+
+        if (around != null)
         {
-            Vehicle[] occupying = World.GetNearbyVehicles(spawnPos, 7.0f);
-            if (occupying != null && occupying.Length > 0) return;
+            foreach (Vehicle v in around)
+            {
+                if (v == null || !v.Exists()) continue;
+                crowded = true;
+
+                // ClearSpawnArea has just emptied a 6m bubble, so only check when it is off.
+                if (_clearAreaFlag != 1 && spawnPos.DistanceTo(v.Position) <= 7.0f) return;
+            }
         }
 
         float cruiseSpeed = isHighway
             ? 18.0f + (float)_rnd.NextDouble() * 5.0f
             : 10.0f + (float)_rnd.NextDouble() * 4.0f;
 
-        float initialSpeed = cruiseSpeed;
-        Vehicle[] around = World.GetNearbyVehicles(spawnPos, 25.0f);
-        if (around != null && around.Length > 0) initialSpeed = 3.0f;
+        float initialSpeed = crowded ? 3.0f : cruiseSpeed;
 
+        string modelToSpawn = null;
         try
         {
-            string modelToSpawn = GetNextModelName(spawnPos);
+            modelToSpawn = GetNextModelName(spawnPos);
             SpawnGhostCar(spawnPos, spawnHeading, modelToSpawn, cruiseSpeed, initialSpeed);
         }
         catch (Exception ex)
         {
-            Notifier.Show("TrafficMP Spawn Error: " + ex.Message);
+            // Blacklist the model that blew up so it is never picked again this session.
+            MarkModelBad(modelToSpawn);
+            ReportSpawnError((modelToSpawn ?? "?") + ": " + ex.Message);
         }
     }
 
@@ -438,14 +543,10 @@ public class TrafficMP : Script
         _spawnCounter++;
 
         if (_spawnCounter == 1)
-        {
-            if (VehList.models_latest.Count > 0)
-                return VehList.models_latest[_rnd.Next(VehList.models_latest.Count)];
-            return "vivanite2";
-        }
+            return GetRandomModel(VehList.models_latest);
 
         if (disableTaxiFlag != 1 && _spawnCounter % 9 == 2)
-            return "vivanite2";
+            return FallbackModel;
 
         return GetModelFromContext(spawnPos);
     }
@@ -488,7 +589,7 @@ public class TrafficMP : Script
             }
         }
 
-        string model_name = "vivanite2";
+        string model_name = FallbackModel;
 
         switch (vclass)
         {
@@ -513,85 +614,160 @@ public class TrafficMP : Script
 
     private string GetRandomModel(List<string> list)
     {
-        if (list == null || list.Count == 0) return "vivanite2";
-        return list[_rnd.Next(list.Count)];
+        if (list == null || list.Count == 0) return FallbackModel;
+
+        // Skip add-ons (unless enabled) and models already known to fail. A few tries is
+        // enough - the list is re-rolled on the next spawn attempt anyway.
+        for (int attempt = 0; attempt < 5; attempt++)
+        {
+            string candidate = list[_rnd.Next(list.Count)];
+            if (!IsModelExcluded(candidate)) return candidate;
+        }
+
+        return FallbackModel;
+    }
+
+    // Vehicle classes that can be given an AI driver and told to cruise. Anything else
+    // (boats, planes, helicopters, trains, trailers, bicycles) either cannot drive on a
+    // road node or crashes the game when CruiseWithVehicle is applied to it.
+    private static bool IsDrivableClass(VehicleClass c)
+    {
+        switch (c)
+        {
+            case VehicleClass.Compacts:
+            case VehicleClass.Sedans:
+            case VehicleClass.SUVs:
+            case VehicleClass.Coupes:
+            case VehicleClass.Muscle:
+            case VehicleClass.SportsClassics:
+            case VehicleClass.Sports:
+            case VehicleClass.Super:
+            case VehicleClass.Motorcycles:
+            case VehicleClass.OffRoad:
+            case VehicleClass.Industrial:
+            case VehicleClass.Utility:
+            case VehicleClass.Vans:
+            case VehicleClass.Service:
+            case VehicleClass.Emergency:
+            case VehicleClass.Military:
+            case VehicleClass.Commercial:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private void SpawnGhostCar(Vector3 position, float heading, string modelName, float cruiseSpeed, float initialSpeed)
     {
+        if (IsModelExcluded(modelName))
+        {
+            if (!IsFallbackModel(modelName)) SpawnGhostCar(position, heading, FallbackModel, cruiseSpeed, initialSpeed);
+            return;
+        }
+
         Model carModel = new Model(modelName);
 
         if (!carModel.IsValid || !carModel.IsInCdImage)
         {
-            if (modelName != "vivanite2") SpawnGhostCar(position, heading, "vivanite2", cruiseSpeed, initialSpeed);
+            MarkModelBad(modelName);
+            if (!IsFallbackModel(modelName)) SpawnGhostCar(position, heading, FallbackModel, cruiseSpeed, initialSpeed);
             return;
         }
 
-        if (!carModel.Request(500))
+        // 500ms was too short for streamed add-on models, which then failed every attempt.
+        if (!carModel.Request(2000))
         {
             carModel.MarkAsNoLongerNeeded();
             return;
         }
 
-        Vehicle vehicle = World.CreateVehicle(carModel, position, heading);
-        carModel.MarkAsNoLongerNeeded();
-
-        if (vehicle == null) return;
-
-        Function.Call(Hash.SET_VEHICLE_ON_GROUND_PROPERLY, vehicle, 5.0f);
-
-        GhostSlot slot = new GhostSlot { Vehicle = vehicle };
-
-        vehicle.IsPersistent = true;
-        vehicle.IsEngineRunning = true;
-        vehicle.AreLightsOn = true;
-
-        if (modelName.ToLower() == "vivanite2")
+        // Reject anything that cannot be driven on a road before it ever gets a driver.
+        if (!IsDrivableClass((VehicleClass)Function.Call<int>(Hash.GET_VEHICLE_CLASS_FROM_NAME, carModel.Hash)))
         {
-            vehicle.Mods.CustomPrimaryColor = Color.White;
-            vehicle.Mods.CustomSecondaryColor = Color.White;
-            Function.Call(Hash.SET_VEHICLE_MOD_KIT, vehicle, 0);
-            Function.Call(Hash.SET_VEHICLE_MOD, vehicle, 48, 0, false);
-            vehicle.LockStatus = VehicleLockStatus.CannotEnter;
-
-            slot.Driver = vehicle.CreateRandomPedOnSeat(VehicleSeat.Driver);
-            if (slot.Driver != null)
-            {
-                slot.Driver.IsVisible = false;
-                slot.Driver.CanBeTargetted = false;
-                slot.Driver.BlockPermanentEvents = true;
-                slot.Driver.IsInvincible = true;
-                slot.Driver.CanRagdoll = false;
-                slot.Driver.CanBeDraggedOutOfVehicle = false;
-            }
-        }
-        else
-        {
-            slot.Driver = vehicle.CreateRandomPedOnSeat(VehicleSeat.Driver);
-            if (slot.Driver != null)
-            {
-                slot.Driver.IsVisible = true;
-                slot.Driver.CanBeTargetted = true;
-                slot.Driver.BlockPermanentEvents = false;
-            }
-        }
-
-        if (slot.Driver == null || !slot.Driver.Exists())
-        {
-            vehicle.Delete();
+            carModel.MarkAsNoLongerNeeded();
+            MarkModelBad(modelName);
             return;
         }
 
-        Function.Call(Hash.SET_DRIVER_ABILITY, slot.Driver, 1.0f);
-        Function.Call(Hash.SET_DRIVER_AGGRESSIVENESS, slot.Driver, 0.0f);
-        Function.Call(Hash.SET_VEHICLE_FORWARD_SPEED, vehicle, initialSpeed);
+        Vehicle vehicle = null;
+        Ped driver = null;
 
-        slot.Driver.Task.CruiseWithVehicle(vehicle, cruiseSpeed, DrivingStyle.Normal);
+        try
+        {
+            vehicle = World.CreateVehicle(carModel, position, heading);
+            carModel.MarkAsNoLongerNeeded();
 
-        if (_trafficBlipConfig == 1)
-            slot.Blip = CreateMarkerAboveCar(vehicle);
+            if (vehicle == null || !vehicle.Exists()) return;
 
-        _slots.Add(slot);
+            Function.Call(Hash.SET_VEHICLE_ON_GROUND_PROPERLY, vehicle, 5.0f);
+
+            vehicle.IsPersistent = true;
+            vehicle.IsEngineRunning = true;
+            vehicle.AreLightsOn = true;
+
+            bool isTaxi = IsFallbackModel(modelName);
+
+            if (isTaxi)
+            {
+                vehicle.Mods.CustomPrimaryColor = Color.White;
+                vehicle.Mods.CustomSecondaryColor = Color.White;
+                Function.Call(Hash.SET_VEHICLE_MOD_KIT, vehicle, 0);
+                Function.Call(Hash.SET_VEHICLE_MOD, vehicle, 48, 0, false);
+                vehicle.LockStatus = VehicleLockStatus.CannotEnter;
+            }
+
+            driver = vehicle.CreateRandomPedOnSeat(VehicleSeat.Driver);
+
+            if (driver == null || !driver.Exists())
+            {
+                // Leave the vehicle for the finally block to remove.
+                driver = null;
+                MarkModelBad(modelName);
+                return;
+            }
+
+            if (isTaxi)
+            {
+                driver.IsVisible = false;
+                driver.CanBeTargetted = false;
+                driver.BlockPermanentEvents = true;
+                driver.IsInvincible = true;
+                driver.CanRagdoll = false;
+                driver.CanBeDraggedOutOfVehicle = false;
+            }
+            else
+            {
+                driver.IsVisible = true;
+                driver.CanBeTargetted = true;
+                driver.BlockPermanentEvents = false;
+            }
+
+            Function.Call(Hash.SET_DRIVER_ABILITY, driver, 1.0f);
+            Function.Call(Hash.SET_DRIVER_AGGRESSIVENESS, driver, 0.0f);
+            Function.Call(Hash.SET_VEHICLE_FORWARD_SPEED, vehicle, initialSpeed);
+
+            driver.Task.CruiseWithVehicle(vehicle, cruiseSpeed, DrivingStyle.Normal);
+
+            GhostSlot slot = new GhostSlot { Vehicle = vehicle, Driver = driver };
+
+            if (_trafficBlipConfig == 1)
+                slot.Blip = CreateMarkerAboveCar(vehicle);
+
+            _slots.Add(slot);
+
+            // Ownership handed to the slot - nothing to clean up below.
+            vehicle = null;
+            driver = null;
+        }
+        finally
+        {
+            // Anything still held here is a half-built spawn that never reached a slot.
+            // Without this an exception mid-setup leaked a driverless persistent vehicle.
+            carModel.MarkAsNoLongerNeeded();
+
+            if (driver != null && driver.Exists()) driver.Delete();
+            if (vehicle != null && vehicle.Exists()) vehicle.Delete();
+        }
     }
 
     private Blip CreateMarkerAboveCar(Vehicle car)
